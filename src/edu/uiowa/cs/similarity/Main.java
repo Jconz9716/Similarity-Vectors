@@ -32,7 +32,7 @@ public class Main {
 			System.exit(1);
 		}else if (cmd.hasOption("clean") && new File(filename).exists()) {
             //Clean file input using Cleanup
-            Iterator<String> cleanedText = new LineFileReader(filename);
+            Iterator<String> lines = new LineFileReader(filename);
         }
 
         if (cmd.hasOption("h")) {
