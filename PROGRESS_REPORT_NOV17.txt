@@ -1,9 +1,18 @@
 What is the status of your project?
 
-
+    JC: Part 1 is working
 
 What has each team done to ensure the success of the team?
 
+    JH: so far, Joe has set up another branch for part 1 & whats in progress/ not fully functional
+    yet, and as he said, we have set up a few channels of communication
 
+    JC: We have set up multiple ways to communicate
 
 What can each team member do going forward to ensure the success of the team?
+
+    JH: we both think the best course forward is to
+             a) complete the assignment
+             b) coordinate to prevent duplication of work
+
+    JC: Make sure we have a plan of what each person will do for each part
