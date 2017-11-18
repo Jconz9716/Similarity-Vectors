@@ -41,8 +41,37 @@ public class Main {
             System.exit(0);
         }
         
+        
+        /*  ADDITIONAL OPTIONS BELOW  */
+        
         if(cmd.hasOption("s")){
-            // JH: print sentences 
+            // print sentences & # of sentences
         }
+        
+        if(cmd.hasOption("v")){
+            // print vectors
+        }
+        
+        if(cmd.hasOption("t")){
+            // Q,J will run Top-J query: find J words most similar
+            // to Q
+        }
+        
+        if(cmd.hasOption("m")){
+            // SIM, where SIM can be cosine/euc/eucnorm. Will 
+            // affect which sim meas unit used for Top-J
+        }
+        
+        if(cmd.hasOption("k")){
+            // k, iters will run K-means clustering w/ k clusters
+            // and iters iterations
+        }
+        
+        if(cmd.hasOption("j")){
+            // k,iters J will run K-means clustering w/ k clusters
+            // and iters iterations. For each cluster it prints the
+            // J words closest to the cluster mean
+        }
+        
     }
 }
