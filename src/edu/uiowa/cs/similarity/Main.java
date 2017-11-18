@@ -40,5 +40,9 @@ public class Main {
             helpf.printHelp("Main", options, true);
             System.exit(0);
         }
+        
+        if(cmd.hasOption("s")){
+            // JH: print sentences 
+        }
     }
 }
