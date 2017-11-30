@@ -1,5 +1,7 @@
 package edu.uiowa.cs.similarity;
 
+import java.util.List;
+
 public interface FilterTextFunction<InT, OutT> {
-        OutT FilterText(InT x);
+        List<List<String>> filterText(InT x);
 }

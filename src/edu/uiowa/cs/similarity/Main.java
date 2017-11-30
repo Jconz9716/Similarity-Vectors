@@ -15,6 +15,7 @@ public class Main {
         Options options = new Options();
         options.addRequiredOption("f", "file", true, "input file to process");
         options.addOption("h", false, "print this help message");
+        options.addOption("clean", false, "Cleaning file");
 
         CommandLineParser parser = new DefaultParser();
 
@@ -32,7 +33,17 @@ public class Main {
 			System.exit(1);
 		}else if (cmd.hasOption("clean") && new File(filename).exists()) {
             //Clean file input using Cleanup
-            Iterator<String> lines = new LineFileReader(filename);
+            System.out.println("Cleaning file...");
+            File dirty = new File(filename);
+            if (cmd.hasOption("s")) { int s = 0;
+                List<List<String>> cleanInput = new FindSentences(dirty).filterText();
+                while (s < cleanInput.size()){
+                    System.out.println(cleanInput.get(s));
+                    s++;
+                }
+            }else {
+                new FindSentences(dirty).filterText();
+            }
         }
 
         if (cmd.hasOption("h")) {
@@ -40,5 +51,7 @@ public class Main {
             helpf.printHelp("Main", options, true);
             System.exit(0);
         }
+
+
     }
 }
