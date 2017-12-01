@@ -71,6 +71,7 @@ public class FindSentences{
         return sentencesList;
     }
 
+    //*** Might need to change to account for words on the same line in stopwords.txt
     private List<String> stopWords() {
         List<String> words = new LinkedList<>();
         try (BufferedReader br = new BufferedReader(new FileReader(stopWords))) {
