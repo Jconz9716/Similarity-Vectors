@@ -6,7 +6,7 @@ import java.io.*;
 import java.nio.file.Path;
 import java.text.ParseException;
 import java.util.Iterator;
-import java.util.List;l
+import java.util.List;
 
 
 public class Main {

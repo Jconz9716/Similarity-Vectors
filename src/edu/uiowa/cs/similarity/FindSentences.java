@@ -19,47 +19,52 @@ public class FindSentences{
     }
 
     public List<List<String>> filterText() {
-        if (text == null){ throw new IllegalStateException(); }
-
+        List<String> stemSentence = new LinkedList<>();
+        List<String> stop = stopWords();
+        String stemmedWord;
+        String line;
+        String[] sentence;
+        PorterStemmer stem = new PorterStemmer();
         Scanner s = null;
+
+        //Throws error if file can't be found
         try {
             s = new Scanner(text);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
+
+        //Could possibly throw nullPointerException. Only an issue if the last line doesn't end with
+        //punctuation. Ex. What the fudge
         s.useDelimiter("[!?.]");
 
-        String stemmedWord;
-        String line;
-        List<String> stemSentence = new LinkedList<>();
-        String[] sentence;
-        PorterStemmer stem = new PorterStemmer();
-
-        while (s.hasNext()){
-
-            //Filter out stop words before removing characters but after making lowercase?
-
+        //Goes until there are no lines left in the document. It's ok if the last line is blank since most end
+        //in a blank line
+        while (s.hasNext()) {
             line = s.next().toLowerCase();
-            line = line.replaceAll("[;:'\n,\\-\"]", "");
-
-            System.out.println("Line: " + line);
-
             sentence = line.split(" ");
 
-            List<String> stopWords = stopWords();
+            //Filters out all of the stop words, then extra characters
 
-            for (int i = 0; i<sentence.length; i++)
-            {
-                if (!stopWords.contains(sentence[i])) {
-                    stemmedWord = stem.stem(sentence[i]);
-                    //System.out.println("Word: " + stemmedWord + "\n");
-                    stemSentence.add(stemmedWord);
+            //*** When sentence continues to next line, the words at the end and beginning of the lines
+            //*** are concatenated. This needs to be fixed.
+            //*** Run with cleanup_test.txt
+            //*** --> Ex. this\nlittle --> thislittl && the\nsame --> thesam
+            for (int i = 0; i < sentence.length; i++) {
+                if (!stop.contains(sentence[i])) {
+                    stemmedWord = sentence[i].replaceAll("[;:'\n,--\"\\s]", "");
+                    if (!stemmedWord.isEmpty()) {
+                        stemmedWord = stem.stem(stemmedWord);
+                        stemSentence.add(stemmedWord);
+                    }
                 }
-
             }
 
+            //For debugging
+            System.out.println("Sentence: " + line);
+            System.out.println("Stem: " + stemSentence);
+
             sentencesList.add(stemSentence);
-            System.out.println(stemSentence);
             stemSentence.clear();
         }
 
