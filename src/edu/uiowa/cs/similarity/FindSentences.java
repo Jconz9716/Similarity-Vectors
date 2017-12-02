@@ -13,9 +13,9 @@ public class FindSentences{
 
     private List<List<String>> sentencesList = new LinkedList<>();
 
-    public FindSentences(File text) {
+    public FindSentences(File text, File grosMots) {
         this.text = text;
-        stopWords = new File("stopwords.txt");
+        stopWords = grosMots;
     }
 
     public List<List<String>> filterText() {
@@ -40,6 +40,7 @@ public class FindSentences{
 
         //Could possibly throw nullPointerException. Only an issue if the last line doesn't end with
         //punctuation. Ex. What the fudge
+        assert s != null;
         s.useDelimiter("[!?.]");
 
         //Goes until there are no lines left in the document. It's ok if the last line is blank since most end
@@ -56,13 +57,11 @@ public class FindSentences{
 
             //Filters out all of the stop words, then extra characters
             for (int i = 0; i < sentence.length; i++) {
-                if (!stop.contains(sentence[i])) {
-                    cleanWord = sentence[i].replaceAll("[;:',--\"\\s]", "");
-                    if (!cleanWord.isEmpty() && !stop.contains(cleanWord)) {
-                        stemmedWord = stem.stem(cleanWord);
-                        //System.out.println(stemmedWord);
-                        stemSentence.add(stemmedWord);
-                    }
+                cleanWord = sentence[i].replaceAll("[;:',--\"\\s]", "");
+                if (!cleanWord.isEmpty() && !stop.contains(cleanWord)) {
+                    stemmedWord = stem.stem(cleanWord);
+                    //System.out.println(stemmedWord);
+                    stemSentence.add(stemmedWord);
                 }
             }
 

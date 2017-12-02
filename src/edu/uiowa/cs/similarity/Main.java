@@ -34,15 +34,18 @@ public class Main {
 		}else if (cmd.hasOption("clean") && new File(filename).exists()) {
             //Clean file input using Cleanup
             System.out.println("Cleaning file...");
+
             File dirty = new File(filename);
+            File stopWords = new File("stopwords.txt");
+
             if (cmd.hasOption("s")) { int s = 0;
-                List<List<String>> cleanInput = new FindSentences(dirty).filterText();
+                List<List<String>> cleanInput = new FindSentences(dirty, stopWords).filterText();
                 while (s < cleanInput.size()){
                     System.out.println(cleanInput.get(s));
                     s++;
                 }
             }else {
-                new FindSentences(dirty).filterText();
+                new FindSentences(dirty, stopWords).filterText();
             }
         }
 
