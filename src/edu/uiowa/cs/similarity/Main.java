@@ -47,13 +47,13 @@ public class Main {
                 FindSentences sentences = new FindSentences(dirty, stopWords);
                 List<List<String>> cleanInput = sentences.filterText();
                 List<String> s;
-                System.out.println(cleanInput.get(0).isEmpty());
                 for (int i = 0; i<cleanInput.size(); i++) {
                     s = cleanInput.get(i);
-                    for (int x = 0; x<s.size(); x++){
+                    System.out.println(s);
+                    /*for (int x = 0; x<s.size(); x++){
                         System.out.println(s.get(x));
                         System.out.println(cleanInput.get(i));
-                    }
+                    }*/
                 }
                 /*while (s < cleanInput.size()){
                     System.out.println(cleanInput.get(s));

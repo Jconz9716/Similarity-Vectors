@@ -18,7 +18,6 @@ public class FindSentences{
     }
 
     public List<List<String>> filterText() {
-        List<String> stemSentence = new LinkedList<>();
         List<List<String>> sentencesList = new LinkedList<>();
         List<String> stop = stopWords();
         String cleanWord;
@@ -28,9 +27,6 @@ public class FindSentences{
         PorterStemmer stem = new PorterStemmer();
         Scanner s = null;
 
-        System.out.println(stop);
-        System.out.println(stop.contains("same"));
-
         //Throws error if file can't be found
         try {
             s = new Scanner(text);
@@ -38,15 +34,14 @@ public class FindSentences{
             e.printStackTrace();
         }
 
-        //Could possibly throw nullPointerException. Only an issue if the last line doesn't end with
-        //punctuation. Ex. What the fudge
         assert s != null;
         s.useDelimiter("[!?.]");
 
         //Goes until there are no lines left in the document. It's ok if the last line is blank since most end
         //in a blank line
+        int count = 0;
         while (s.hasNext()) {
-            stemSentence.clear();
+            List<String> stemSentence = new LinkedList<>();
             line = s.next().toLowerCase();
 
             line = line.replaceAll("\n", " ");
@@ -55,22 +50,30 @@ public class FindSentences{
 
             sentence = line.split(" ");
 
-            //Filters out all of the stop words, then extra characters
+            //Filters out all of the extra characters, then  stop words
             for (int i = 0; i < sentence.length; i++) {
-                cleanWord = sentence[i].replaceAll("[;:',--\"\\s]", "");
+                cleanWord = sentence[i].replaceAll("[;:,--\"\\s]", "");
                 if (!cleanWord.isEmpty() && !stop.contains(cleanWord)) {
+                    cleanWord = cleanWord.replaceAll("[']", "");
                     stemmedWord = stem.stem(cleanWord);
-                    //System.out.println(stemmedWord);
                     stemSentence.add(stemmedWord);
                 }
             }
-            //For debugging
+            /*//For debugging
             System.out.println("Stem: " + stemSentence);
-
-            sentencesList.add(stemSentence);
+*/
+            //Will only print stemmed sentence if the element is not empty
+            if (!stemSentence.isEmpty()) {
+                sentencesList.add(count, stemSentence);
+                count++;
+                System.out.println("Sentence: " + stemSentence);
+            }
+            /*for (int i = 0; i<sentencesList.size(); i++) {
+                System.out.println("Element " + i + " " + sentencesList.get(i));
+            }*/
         }
 
-        System.out.println(sentencesList.get(0).isEmpty());
+        //System.out.println("Is first element empty: " + sentencesList.get(0).isEmpty());
         return sentencesList;
     }
 
