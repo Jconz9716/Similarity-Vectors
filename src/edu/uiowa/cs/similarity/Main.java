@@ -16,6 +16,8 @@ public class Main {
         options.addRequiredOption("f", "file", true, "input file to process");
         options.addOption("h", false, "print this help message");
         options.addOption("clean", false, "Cleaning file");
+        options.addOption("s", false, "Prints sentences");
+        options.addOption("v", false, "Generates semantic descriptor vector");
 
         CommandLineParser parser = new DefaultParser();
 
@@ -38,14 +40,27 @@ public class Main {
             File dirty = new File(filename);
             File stopWords = new File("stopwords.txt");
 
-            if (cmd.hasOption("s")) { int s = 0;
-                List<List<String>> cleanInput = new FindSentences(dirty, stopWords).filterText();
-                while (s < cleanInput.size()){
+
+            //*** Empty lists *** Need to fix
+            //*** Works when clean input is of type List<String> but then words aren't separated into sentences ***
+            if (cmd.hasOption("s")) { //int s = 0;
+                FindSentences sentences = new FindSentences(dirty, stopWords);
+                List<List<String>> cleanInput = sentences.filterText();
+                List<String> s;
+                System.out.println(cleanInput.get(0).isEmpty());
+                for (int i = 0; i<cleanInput.size(); i++) {
+                    s = cleanInput.get(i);
+                    for (int x = 0; x<s.size(); x++){
+                        System.out.println(s.get(x));
+                        System.out.println(cleanInput.get(i));
+                    }
+                }
+                /*while (s < cleanInput.size()){
                     System.out.println(cleanInput.get(s));
                     s++;
-                }
+                }*/
             }else {
-                new FindSentences(dirty, stopWords).filterText();
+                List<List<String>> cleanInput = new FindSentences(dirty, stopWords).filterText();
             }
         }
 

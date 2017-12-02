@@ -11,15 +11,15 @@ public class FindSentences{
     private final File text;
     private final File stopWords;
 
-    private List<List<String>> sentencesList = new LinkedList<>();
-
     public FindSentences(File text, File grosMots) {
         this.text = text;
+        //Bad words are "gros mots" in French
         stopWords = grosMots;
     }
 
     public List<List<String>> filterText() {
         List<String> stemSentence = new LinkedList<>();
+        List<List<String>> sentencesList = new LinkedList<>();
         List<String> stop = stopWords();
         String cleanWord;
         String stemmedWord;
@@ -50,8 +50,8 @@ public class FindSentences{
 
 
             line = line.replaceAll("\n", " ");
-            //For debugging
-            System.out.println("Sentence: " + line);
+            /*For debugging
+            System.out.println("Sentence: " + line);*/
 
             sentence = line.split(" ");
 
@@ -64,14 +64,14 @@ public class FindSentences{
                     stemSentence.add(stemmedWord);
                 }
             }
-
-            //For debugging
-            System.out.println("Stem: " + stemSentence);
+            /*For debugging
+            System.out.println("Stem: " + stemSentence);*/
 
             sentencesList.add(stemSentence);
             stemSentence.clear();
         }
 
+        System.out.println(sentencesList);
         return sentencesList;
     }
 
