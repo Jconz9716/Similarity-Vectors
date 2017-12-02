@@ -5,7 +5,6 @@ import org.apache.commons.cli.*;
 import java.io.*;
 import java.nio.file.Path;
 import java.text.ParseException;
-import java.util.Iterator;
 import java.util.List;
 
 
@@ -41,26 +40,17 @@ public class Main {
             File stopWords = new File("stopwords.txt");
 
 
-            //*** Empty lists *** Need to fix
-            //*** Works when clean input is of type List<String> but then words aren't separated into sentences ***
+            //Prints cleaned sentences. For debugging only
             if (cmd.hasOption("s")) { //int s = 0;
                 FindSentences sentences = new FindSentences(dirty, stopWords);
-                List<List<String>> cleanInput = sentences.filterText();
+                List<List<String>> clean = sentences.filterText();
                 List<String> s;
-                for (int i = 0; i<cleanInput.size(); i++) {
-                    s = cleanInput.get(i);
+                for (int i = 0; i<clean.size(); i++) {
+                    s = clean.get(i);
                     System.out.println(s);
-                    /*for (int x = 0; x<s.size(); x++){
-                        System.out.println(s.get(x));
-                        System.out.println(cleanInput.get(i));
-                    }*/
                 }
-                /*while (s < cleanInput.size()){
-                    System.out.println(cleanInput.get(s));
-                    s++;
-                }*/
             }else {
-                List<List<String>> cleanInput = new FindSentences(dirty, stopWords).filterText();
+                List<List<String>> clean = new FindSentences(dirty, stopWords).filterText();
             }
         }
 

@@ -45,8 +45,6 @@ public class FindSentences{
             line = s.next().toLowerCase();
 
             line = line.replaceAll("\n", " ");
-            /*For debugging
-            System.out.println("Sentence: " + line);*/
 
             sentence = line.split(" ");
 
@@ -54,26 +52,20 @@ public class FindSentences{
             for (int i = 0; i < sentence.length; i++) {
                 cleanWord = sentence[i].replaceAll("[;:,--\"\\s]", "");
                 if (!cleanWord.isEmpty() && !stop.contains(cleanWord)) {
+                    //Removing "'" after checking for stop words in order to catch contractions
+                    // Ex. don't, can't, wouldn't, etc.
                     cleanWord = cleanWord.replaceAll("[']", "");
                     stemmedWord = stem.stem(cleanWord);
                     stemSentence.add(stemmedWord);
                 }
             }
-            /*//For debugging
-            System.out.println("Stem: " + stemSentence);
-*/
             //Will only print stemmed sentence if the element is not empty
             if (!stemSentence.isEmpty()) {
                 sentencesList.add(count, stemSentence);
                 count++;
                 System.out.println("Sentence: " + stemSentence);
             }
-            /*for (int i = 0; i<sentencesList.size(); i++) {
-                System.out.println("Element " + i + " " + sentencesList.get(i));
-            }*/
         }
-
-        //System.out.println("Is first element empty: " + sentencesList.get(0).isEmpty());
         return sentencesList;
     }
 
