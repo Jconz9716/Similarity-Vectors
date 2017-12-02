@@ -5,7 +5,6 @@ import org.apache.commons.cli.*;
 import java.io.*;
 import java.nio.file.Path;
 import java.text.ParseException;
-import java.util.Iterator;
 import java.util.List;
 
 
@@ -15,6 +14,9 @@ public class Main {
         Options options = new Options();
         options.addRequiredOption("f", "file", true, "input file to process");
         options.addOption("h", false, "print this help message");
+        options.addOption("clean", false, "Cleaning file");
+        options.addOption("s", false, "Prints sentences");
+        options.addOption("v", true, "Generates semantic descriptor vector");
 
         CommandLineParser parser = new DefaultParser();
 
@@ -30,9 +32,33 @@ public class Main {
 		if (!new File(filename).exists()) {
 			System.err.println("file does not exist "+filename);
 			System.exit(1);
-		}else if (cmd.hasOption("clean") && new File(filename).exists()) {
+		}
+		if (cmd.hasOption("clean") && new File(filename).exists()) {
             //Clean file input using Cleanup
-            Iterator<String> lines = new LineFileReader(filename);
+            System.out.println("Cleaning file...");
+
+            File dirty = new File(filename);
+            File stopWords = new File("stopwords.txt");
+
+            FindSentences sentences = new FindSentences(dirty, stopWords);
+            List<List<String>> clean = sentences.filterText();
+
+            //Prints cleaned sentences. For debugging only
+            if (cmd.hasOption("s")) {
+                List<String> s;
+                for (int i = 0; i<clean.size(); i++) {
+                    s = clean.get(i);
+                    System.out.println(s);
+                }
+                System.out.println("\n");
+            }
+        }
+
+        if (cmd.hasOption("v")) {
+            String getVector = cmd.getOptionValue("v");
+            String printMess = "Calculating vector for: %s...";
+            printMess = String.format(printMess, getVector);
+            System.out.println(printMess);
         }
 
         if (cmd.hasOption("h")) {
@@ -40,38 +66,7 @@ public class Main {
             helpf.printHelp("Main", options, true);
             System.exit(0);
         }
-        
-        
-        /*  ADDITIONAL OPTIONS BELOW  */
-        
-        if(cmd.hasOption("s")){
-            // print sentences & # of sentences
-        }
-        
-        if(cmd.hasOption("v")){
-            // print vectors
-        }
-        
-        if(cmd.hasOption("t")){
-            // Q,J will run Top-J query: find J words most similar
-            // to Q
-        }
-        
-        if(cmd.hasOption("m")){
-            // SIM, where SIM can be cosine/euc/eucnorm. Will 
-            // affect which sim meas unit used for Top-J
-        }
-        
-        if(cmd.hasOption("k")){
-            // k, iters will run K-means clustering w/ k clusters
-            // and iters iterations
-        }
-        
-        if(cmd.hasOption("j")){
-            // k,iters J will run K-means clustering w/ k clusters
-            // and iters iterations. For each cluster it prints the
-            // J words closest to the cluster mean
-        }
-        
+
+
     }
 }
