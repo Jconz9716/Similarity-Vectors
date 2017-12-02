@@ -42,6 +42,9 @@ public class FindSentences{
         //in a blank line
         while (s.hasNext()) {
             line = s.next().toLowerCase();
+
+            //For debugging
+            System.out.println("Sentence: " + line);
             line = line.replaceAll("\n", " ");
             sentence = line.split(" ");
 
@@ -53,7 +56,7 @@ public class FindSentences{
             //*** --> Ex. this\nlittle --> thislittl && the\nsame --> thesam
             for (int i = 0; i < sentence.length; i++) {
                 if (!stop.contains(sentence[i])) {
-                    stemmedWord = sentence[i].replaceAll("[;:'\n,--\"\\s]", "");
+                    stemmedWord = sentence[i].replaceAll("[;:',--\"\\s]", "");
                     if (!stemmedWord.isEmpty()) {
                         stemmedWord = stem.stem(stemmedWord);
                         stemSentence.add(stemmedWord);
@@ -62,7 +65,6 @@ public class FindSentences{
             }
 
             //For debugging
-            System.out.println("Sentence: " + line);
             System.out.println("Stem: " + stemSentence);
 
             sentencesList.add(stemSentence);
