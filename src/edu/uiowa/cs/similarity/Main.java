@@ -41,7 +41,7 @@ public class Main {
 
 
             //Prints cleaned sentences. For debugging only
-            if (cmd.hasOption("s")) { //int s = 0;
+            if (cmd.hasOption("s")) {
                 FindSentences sentences = new FindSentences(dirty, stopWords);
                 List<List<String>> clean = sentences.filterText();
                 List<String> s;
