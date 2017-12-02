@@ -42,6 +42,7 @@ public class FindSentences{
         //in a blank line
         while (s.hasNext()) {
             line = s.next().toLowerCase();
+            line = line.replaceAll("\n", " ");
             sentence = line.split(" ");
 
             //Filters out all of the stop words, then extra characters
@@ -74,13 +75,21 @@ public class FindSentences{
     //*** Might need to change to account for words on the same line in stopwords.txt
     private List<String> stopWords() {
         List<String> words = new LinkedList<>();
-        try (BufferedReader br = new BufferedReader(new FileReader(stopWords))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                words.add(line);
+        Scanner s2 = null;
+        try {
+            s2 = new Scanner(stopWords);
+        } catch (FileNotFoundException er) {
+            er.printStackTrace();
+        }
+
+        if (s2 != null) {
+            while (s2.hasNextLine()) {
+                Scanner tmp = new Scanner(s2.nextLine());
+                while (tmp.hasNext()) {
+                    String x = tmp.next();
+                    words.add(x);
+                }
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
         return words;
     }
