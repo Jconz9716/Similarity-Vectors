@@ -46,8 +46,8 @@ public class FindSentences{
         //Goes until there are no lines left in the document. It's ok if the last line is blank since most end
         //in a blank line
         while (s.hasNext()) {
+            stemSentence.clear();
             line = s.next().toLowerCase();
-
 
             line = line.replaceAll("\n", " ");
             /*For debugging
@@ -64,14 +64,13 @@ public class FindSentences{
                     stemSentence.add(stemmedWord);
                 }
             }
-            /*For debugging
-            System.out.println("Stem: " + stemSentence);*/
+            //For debugging
+            System.out.println("Stem: " + stemSentence);
 
             sentencesList.add(stemSentence);
-            stemSentence.clear();
         }
 
-        System.out.println(sentencesList);
+        System.out.println(sentencesList.get(0).isEmpty());
         return sentencesList;
     }
 
