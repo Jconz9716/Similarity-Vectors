@@ -21,11 +21,15 @@ public class FindSentences{
     public List<List<String>> filterText() {
         List<String> stemSentence = new LinkedList<>();
         List<String> stop = stopWords();
+        String cleanWord;
         String stemmedWord;
         String line;
         String[] sentence;
         PorterStemmer stem = new PorterStemmer();
         Scanner s = null;
+
+        System.out.println(stop);
+        System.out.println(stop.contains("same"));
 
         //Throws error if file can't be found
         try {
@@ -43,22 +47,20 @@ public class FindSentences{
         while (s.hasNext()) {
             line = s.next().toLowerCase();
 
+
+            line = line.replaceAll("\n", " ");
             //For debugging
             System.out.println("Sentence: " + line);
-            line = line.replaceAll("\n", " ");
+
             sentence = line.split(" ");
 
             //Filters out all of the stop words, then extra characters
-
-            //*** When sentence continues to next line, the words at the end and beginning of the lines
-            //*** are concatenated. This needs to be fixed.
-            //*** Run with cleanup_test.txt
-            //*** --> Ex. this\nlittle --> thislittl && the\nsame --> thesam
             for (int i = 0; i < sentence.length; i++) {
                 if (!stop.contains(sentence[i])) {
-                    stemmedWord = sentence[i].replaceAll("[;:',--\"\\s]", "");
-                    if (!stemmedWord.isEmpty()) {
-                        stemmedWord = stem.stem(stemmedWord);
+                    cleanWord = sentence[i].replaceAll("[;:',--\"\\s]", "");
+                    if (!cleanWord.isEmpty() && !stop.contains(cleanWord)) {
+                        stemmedWord = stem.stem(cleanWord);
+                        //System.out.println(stemmedWord);
                         stemSentence.add(stemmedWord);
                     }
                 }
@@ -84,15 +86,18 @@ public class FindSentences{
             er.printStackTrace();
         }
 
-        if (s2 != null) {
+        if (s2 != null)
             while (s2.hasNextLine()) {
                 Scanner tmp = new Scanner(s2.nextLine());
+                tmp.useDelimiter("[\\s]");
                 while (tmp.hasNext()) {
                     String x = tmp.next();
-                    words.add(x);
+                    if (!x.isEmpty()){
+                        words.add(x);
+                    }
                 }
             }
-        }
+
         return words;
     }
 }
