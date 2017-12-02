@@ -16,7 +16,7 @@ public class Main {
         options.addOption("h", false, "print this help message");
         options.addOption("clean", false, "Cleaning file");
         options.addOption("s", false, "Prints sentences");
-        options.addOption("v", false, "Generates semantic descriptor vector");
+        options.addOption("v", true, "Generates semantic descriptor vector");
 
         CommandLineParser parser = new DefaultParser();
 
@@ -32,26 +32,33 @@ public class Main {
 		if (!new File(filename).exists()) {
 			System.err.println("file does not exist "+filename);
 			System.exit(1);
-		}else if (cmd.hasOption("clean") && new File(filename).exists()) {
+		}
+		if (cmd.hasOption("clean") && new File(filename).exists()) {
             //Clean file input using Cleanup
             System.out.println("Cleaning file...");
 
             File dirty = new File(filename);
             File stopWords = new File("stopwords.txt");
 
+            FindSentences sentences = new FindSentences(dirty, stopWords);
+            List<List<String>> clean = sentences.filterText();
 
             //Prints cleaned sentences. For debugging only
             if (cmd.hasOption("s")) {
-                FindSentences sentences = new FindSentences(dirty, stopWords);
-                List<List<String>> clean = sentences.filterText();
                 List<String> s;
                 for (int i = 0; i<clean.size(); i++) {
                     s = clean.get(i);
                     System.out.println(s);
                 }
-            }else {
-                List<List<String>> clean = new FindSentences(dirty, stopWords).filterText();
+                System.out.println("\n");
             }
+        }
+
+        if (cmd.hasOption("v")) {
+            String getVector = cmd.getOptionValue("v");
+            String printMess = "Calculating vector for: %s...";
+            printMess = String.format(printMess, getVector);
+            System.out.println(printMess);
         }
 
         if (cmd.hasOption("h")) {
