@@ -7,24 +7,16 @@ import java.util.List;
 import java.util.Scanner;
 import opennlp.tools.stemmer.*;
 
-public class FindSentences{
+public class FindSentences implements Filter<String> {
     private final File text;
     private final File stopWords;
 
     public FindSentences(File text, File grosMots) {
         this.text = text;
-        //Bad words are "gros mots" in French
-        stopWords = grosMots;
+        this.stopWords = grosMots;
     }
 
-    public List<List<String>> filterText() {
-        List<List<String>> sentencesList = new LinkedList<>();
-        List<String> stop = stopWords();
-        String cleanWord;
-        String stemmedWord;
-        String line;
-        String[] sentence;
-        PorterStemmer stem = new PorterStemmer();
+    public List<List<String>> steamAndClean() {
         Scanner s = null;
 
         //Throws error if file can't be found
@@ -34,15 +26,27 @@ public class FindSentences{
             e.printStackTrace();
         }
 
-        assert s != null;
-        s.useDelimiter("[!?.]");
+        return meatAndPotatoes(s);
+    }
 
-        //Goes until there are no lines left in the document. It's ok if the last line is blank since most end
-        //in a blank line
-        int count = 0;
-        while (s.hasNext()) {
+    /*This is where the action happens
+    Goes until there are no lines left in the document. It's ok if the last line is blank since most end
+    in a blank line */
+    private List<List<String>> meatAndPotatoes(Scanner scanner) {
+        List<List<String>> sentencesList = new LinkedList<>();
+        List<String> stop = stopWords();
+        String cleanWord;
+        String stemmedWord;
+        String line;
+        String[] sentence;
+        PorterStemmer stem = new PorterStemmer();
+
+        scanner.useDelimiter("[.!?]");
+
+        int index = 0;
+        while (scanner.hasNext()) {
             List<String> stemSentence = new LinkedList<>();
-            line = s.next().toLowerCase();
+            line = scanner.next().toLowerCase();
 
             line = line.replaceAll("\n", " ");
 
@@ -52,8 +56,8 @@ public class FindSentences{
             for (int i = 0; i < sentence.length; i++) {
                 cleanWord = sentence[i].replaceAll("[;:,--\"\\s]", "");
                 if (!cleanWord.isEmpty() && !stop.contains(cleanWord)) {
-                    //Removing "'" after checking for stop words in order to catch contractions
-                    // Ex. don't, can't, wouldn't, etc.
+//                    Removing "'" after checking for stop words in order to catch contractions
+//                    Ex. don't, can't, wouldn't, etc.
                     cleanWord = cleanWord.replaceAll("[']", "");
                     stemmedWord = stem.stem(cleanWord);
                     stemSentence.add(stemmedWord);
@@ -61,9 +65,9 @@ public class FindSentences{
             }
             //Will only print stemmed sentence if the element is not empty
             if (!stemSentence.isEmpty()) {
-                sentencesList.add(count, stemSentence);
-                count++;
-                //System.out.println("Sentence: " + stemSentence);
+                sentencesList.add(index, stemSentence);
+                index++;
+//                System.out.println("Sentence: " + stemSentence);
             }
         }
         return sentencesList;

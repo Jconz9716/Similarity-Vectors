@@ -66,7 +66,7 @@ public class Vector implements VectorInterface<String> {
     }
 
     public void printVector() {
-        System.out.println(vectorToList());
+        System.out.println("Word: " + getBase() + " -> " + vectorToList());
     }
 
     public List<String> vectorToList() {
