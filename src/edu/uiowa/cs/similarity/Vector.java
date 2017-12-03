@@ -5,36 +5,42 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-public class Vector {
-    public String base;
-    public MutableInt similarity;
-    Map<String, MutableInt> vector = new HashMap<>();
+public class Vector implements VectorInterface<String> {
+    Object base;
+    private SimValue similarity;
+    private Map<String, SimValue> vector = new HashMap<>();
 
     public Vector() {
         this.base = null;
-        this.similarity = new MutableInt(0);
+        this.similarity = new SimValue(0);
     }
 
     public Vector(String s) {
         this.base = s;
-        vector.put(base, new MutableInt(0));
+        this.similarity = new SimValue(0);
+        vector.put(base.toString(), similarity);
     }
 
     public void insert(String s) {
-        MutableInt x = new MutableInt(0);
+        SimValue x = new SimValue(0);
+        if (vector.isEmpty()) {
+            vector.put(base.toString(), x);
+        }
         vector.put(s, x);
     }
 
-    public Map<String, MutableInt> getVector() {
+   /* public Map<String, SimValue> getVector() {
         return vector;
-    }
+    }*/
 
     public void increment(String s) {
-        MutableInt x = new MutableInt(0);
+        SimValue x = new SimValue(0);
         if (!vector.containsKey(s)) {
             vector.put(s, x);
         }
-        vector.get(s).increment();
+        //System.out.println("Original simValue: " + vector.get(s).getAsString());
+        vector.get(s).incrementSim();
+        //System.out.println("New simValue: " + vector.get(s).getAsString());
     }
 
     public boolean contains(String s) {
@@ -42,11 +48,11 @@ public class Vector {
     }
 
     //Only for getting the key and value pair, cannot change the sim value
-    public String get(String key) {
+    public String getPair(String key) {
         List<Object> pair = new LinkedList<>();
         if (contains(key)) {
             pair.add(key);
-            pair.add(vector.get(key));
+            pair.add(vector.get(key).getAsString());
         }
         return pair.toString();
     }
@@ -55,23 +61,27 @@ public class Vector {
         return vector.size();
     }
 
+    public String getBase() {
+        return this.base.toString();
+    }
+
     public void printVector() {
         vector.forEach((key, value) -> System.out.println(key + " : "  + value.getAsString()));
     }
 
-    public class MutableInt {
-        private int i;
-        public MutableInt() {
-            this.i = 0;
+    public class SimValue {
+        private int value;
+        public SimValue() {
+            this.value = 0;
         }
-        public MutableInt(int i) {
-            this.i = i;
+        public SimValue(int i) {
+            this.value = i;
         }
 
-        public void increment() { i++;}
-        public int get() { return i; }
+        public void incrementSim() { value++;}
+        public int getSimValue() { return value; }
         public String getAsString() {
-            return String.valueOf(i);
+            return String.valueOf(value);
         }
     }
 }

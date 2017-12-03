@@ -63,7 +63,7 @@ public class FindSentences{
             if (!stemSentence.isEmpty()) {
                 sentencesList.add(count, stemSentence);
                 count++;
-                System.out.println("Sentence: " + stemSentence);
+                //System.out.println("Sentence: " + stemSentence);
             }
         }
         return sentencesList;
