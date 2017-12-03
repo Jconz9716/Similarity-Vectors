@@ -1,4 +1,4 @@
-package edu.uiowa.cs.similarity;
 
-public class Vector {
+public interface Vector<T> {
+    public Vector similarity(T x);
 }

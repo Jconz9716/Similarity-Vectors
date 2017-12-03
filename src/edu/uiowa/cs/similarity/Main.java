@@ -9,6 +9,7 @@ import java.util.List;
 
 
 public class Main {
+    private static List<List<String>> clean;
 
     public static void main(String[] args) throws ParseException {
         Options options = new Options();
@@ -41,7 +42,7 @@ public class Main {
             File stopWords = new File("stopwords.txt");
 
             FindSentences sentences = new FindSentences(dirty, stopWords);
-            List<List<String>> clean = sentences.filterText();
+            clean = sentences.filterText();
 
             //Prints cleaned sentences. For debugging only
             if (cmd.hasOption("s")) {
@@ -59,6 +60,9 @@ public class Main {
             String printMess = "Calculating vector for: %s...";
             printMess = String.format(printMess, getVector);
             System.out.println(printMess);
+
+            SimilarityVector vector = new SimilarityVector("man", clean);
+            System.out.println(vector.unique());
         }
 
         if (cmd.hasOption("h")) {
