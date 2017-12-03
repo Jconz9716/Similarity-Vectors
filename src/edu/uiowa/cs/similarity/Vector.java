@@ -66,7 +66,13 @@ public class Vector implements VectorInterface<String> {
     }
 
     public void printVector() {
-        vector.forEach((key, value) -> System.out.println(key + " : "  + value.getAsString()));
+        System.out.println(vectorToList());
+    }
+
+    public List<String> vectorToList() {
+        List<String> sv = new LinkedList<>();
+        vector.forEach((key, value) -> sv.add(key + " : "  + value.getAsString()));
+        return sv;
     }
 
     public class SimValue {
