@@ -62,7 +62,9 @@ public class Main {
             System.out.println(printMess);
 
             SimilarityVector vector = new SimilarityVector("man", clean);
-            System.out.println(vector.unique());
+            //System.out.println(vector.unique());
+            Vector simVector = vector.similarity();
+            simVector.printVector();
         }
 
         if (cmd.hasOption("h")) {
