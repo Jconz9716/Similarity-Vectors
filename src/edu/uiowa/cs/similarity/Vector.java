@@ -1,9 +1,7 @@
 package edu.uiowa.cs.similarity;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
 import opennlp.tools.stemmer.*;
 
 public class Vector implements VectorInterface<String> {
@@ -76,8 +74,10 @@ public class Vector implements VectorInterface<String> {
         if (vector.isEmpty()) {
             System.err.println("*** The keyword '" + getBase() + "' does not exist in this text ***");
         }else {
-            List<String> vectorString = new LinkedList<>();
-            System.out.println("Word: " + getBase() + " -> " + printVectorHelper(vectorToList(), vectorString));
+            List<String> pVector = new LinkedList<>();
+            pVector = printVectorHelper(vectorToList(), pVector);
+            Collections.sort(pVector);
+            System.out.println("Word: " + getBase() + " -> " + pVector);
         }
     }
 

@@ -71,9 +71,9 @@ public class FileFilter implements Filter<String> {
 //                    Removing "'" after checking for stop words in order to catch contractions
 //                    Ex. don't, can't, wouldn't, etc.
                     cleanWord = cleanWord.replaceAll("[']", "");
-                    System.out.println(cleanWord);
+//                    System.out.println(cleanWord);
                     stemmedWord = stem.stem(cleanWord);
-                    System.out.println("Stemmed --> " + stemmedWord);
+//                    System.out.println("Stemmed --> " + stemmedWord);
                     stemSentence.add(stemmedWord);
                 }
             }

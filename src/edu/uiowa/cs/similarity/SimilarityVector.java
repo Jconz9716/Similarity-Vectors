@@ -43,7 +43,7 @@ public class SimilarityVector extends Vector {
 //            System.out.println("\n-------------------\n" + "Sentence contains " + vector.getBase() + ": "  + increase);
             for (int x = 0; x<sentence.size(); x++) {
                 word =  sentence.get(x);
-                System.out.println(word + " equals " + vector.getStemmedBase() + " --> " + word.equals(vector.getStemmedBase()));
+//                System.out.println(word + " equals " + vector.getStemmedBase() + " --> " + word.equals(vector.getStemmedBase()));
                 if (increase) {  //If current sentence contains the base, increments each word in s.
                     if (!vector.contains(word)) {
                         vector.insert(word);
