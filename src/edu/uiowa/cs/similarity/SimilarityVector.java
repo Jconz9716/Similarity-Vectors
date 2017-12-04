@@ -9,12 +9,12 @@ public class SimilarityVector extends Vector {
     private List<List<String>> cleanedWords;
     private List<List<String>> dirtyWords;
 
-    SimilarityVector(List<List<String>> cleanedWords, List<List<String>> dirtyWords) {
+    public SimilarityVector(List<List<String>> cleanedWords, List<List<String>> dirtyWords) {
         this.cleanedWords = cleanedWords;
         this.dirtyWords = dirtyWords;
     }
 
-    List<String> getUniqueWords(List<List<String>> words) {
+    public List<String> getUniqueWords(List<List<String>> words) {
         List<String> unique = new LinkedList<>();
         for (int i = 0; i<words.size(); i++) {
             List<String> sentence = words.get(i);
@@ -31,7 +31,7 @@ public class SimilarityVector extends Vector {
 
     //Doesn't save a word if the sentence doesn't contain the base.
     //Ex. Word: man won't save any [believ, liver, diseas] because !contains man
-    Vector createVector(String base) {
+    public Vector createVector(String base) {
         List<String> sentence;
         String word;
         PorterStemmer stem = new PorterStemmer();
@@ -61,7 +61,7 @@ public class SimilarityVector extends Vector {
         return vector;
     }
 
-    List<Vector> makeAllVectors() {
+    public List<Vector> makeAllVectors() {
         List<String> words = getUniqueWords(dirtyWords);
         List<String> done = new LinkedList<>();
         List<Vector> vectors = new LinkedList<>();
