@@ -56,9 +56,11 @@ public class Main {
             }
         }
 
+        //Only creates 1 vector and requires an argument to create that vector
         if (cmd.hasOption("v")) {
             String vectorBase = cmd.getOptionValue("v");
-            String printMess = "Calculating vector for: %s...";
+            String printMess = "Calculating vector for %s...";
+            printMess = String.format(printMess, vectorBase);
             System.out.println(printMess);
             SimilarityVector vector = new SimilarityVector(clean, unCleanUnique);
 //          System.out.println(vector.getCleanUniqueWords());
@@ -68,9 +70,9 @@ public class Main {
 
         if (cmd.hasOption("t")) {
 		    String tmp = cmd.getOptionValue("v");
-		    //String[] a = tmp.split(",");
-		    //String keyword = a[0];
-		    //int num = Integer.parseInt(a[1]);
+		    String[] a = tmp.split(",");
+		    String keyword = a[0];
+		    int num = Integer.parseInt(a[1]);
 		    //Priority queue
             List<Vector> vectors = makeVectors();
             for (int x = 0; x<vectors.size(); x++) {

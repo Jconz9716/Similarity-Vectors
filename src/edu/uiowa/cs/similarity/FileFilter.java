@@ -39,7 +39,7 @@ public class FileFilter implements Filter<String> {
             e.printStackTrace();
         }
 
-        return allWords(s);
+        return allWordsHelper(s);
     }
     /*This is where the action happens
     Goes until there are no lines left in the document. It's ok if the last line is blank since most end
@@ -85,7 +85,7 @@ public class FileFilter implements Filter<String> {
         return sentencesList;
     }
 
-    private List<List<String>> allWords(Scanner scanner) {
+    private List<List<String>> allWordsHelper(Scanner scanner) {
         List<List<String>> sentencesList = new LinkedList<>();
         List<String> stop = stopWords();
         String cleanWord;

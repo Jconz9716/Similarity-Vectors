@@ -8,7 +8,6 @@ import java.util.List;
 public class SimilarityVector extends Vector {
     private List<List<String>> cleanedWords;
     private List<List<String>> dirtyWords;
-    private String keyword;
 
     SimilarityVector(List<List<String>> cleanedWords, List<List<String>> dirtyWords) {
         this.cleanedWords = cleanedWords;
@@ -30,6 +29,8 @@ public class SimilarityVector extends Vector {
         return unique;
     }
 
+    //Doesn't save a word if the sentence doesn't contain the base.
+    //Ex. Word: man won't save any [believ, liver, diseas] because !contains man
     Vector createVector(String base) {
         List<String> sentence;
         String word;
@@ -77,5 +78,5 @@ public class SimilarityVector extends Vector {
         return cleanedWords;
     }
 
-    public List<List<String>> getDirtyWords() { return dirtyWords; }
+    private List<List<String>> getDirtyWords() { return dirtyWords; }
 }
