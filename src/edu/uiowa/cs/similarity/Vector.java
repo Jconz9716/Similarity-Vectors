@@ -69,7 +69,7 @@ public class Vector implements VectorInterface<String> {
 
     public String getStemmedBase() {
         PorterStemmer stemmer = new PorterStemmer();
-        return stemmer.stem(this.base.toString());
+        return stemmer.stem(getBase());
     }
 
     public void printVector() {

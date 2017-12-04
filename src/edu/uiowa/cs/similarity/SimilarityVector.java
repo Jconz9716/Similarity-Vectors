@@ -1,6 +1,6 @@
 package edu.uiowa.cs.similarity;
 
-import opennlp.tools.stemmer.PorterStemmer;
+import opennlp.tools.stemmer.*;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -43,15 +43,14 @@ public class SimilarityVector extends Vector {
 //            System.out.println("\n-------------------\n" + "Sentence contains " + vector.getBase() + ": "  + increase);
             for (int x = 0; x<sentence.size(); x++) {
                 word =  sentence.get(x);
-                word = stem.stem(word);
-//                System.out.println(word + " equals base: " + word.equals(vector.getBase()));
+                System.out.println(word + " equals " + vector.getStemmedBase() + " --> " + word.equals(vector.getStemmedBase()));
                 if (increase) {  //If current sentence contains the base, increments each word in s.
                     if (!vector.contains(word)) {
                         vector.insert(word);
                     }
                     if (!word.equals(vector.getStemmedBase())){    //Prevents incrementing sim value of base word
 //                        System.out.println("Increasing...");
-//                        System.out.println(word + " isn't equal to " + tmpVector.getBase());
+//                        System.out.println(word + " isn't equal to " + vector.getBase());
                         vector.increment(word);
 //                        System.out.println(vector.getPairAsString(word));
                     }

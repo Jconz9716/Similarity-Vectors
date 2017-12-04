@@ -41,8 +41,8 @@ public class Main {
             File stopWords = new File("stopwords.txt");
 
             FileFilter sentences = new FileFilter(dirty, stopWords);
-            clean = sentences.steamAndClean();
-            unCleanUnique = sentences.allWords();
+            clean = sentences.getCleanWords();
+            unCleanUnique = sentences.getDirtyWords();
 
 
             //Prints cleaned sentences. For debugging only

@@ -16,7 +16,7 @@ public class FileFilter implements Filter<String> {
         this.stopWords = grosMots;
     }
 
-    public List<List<String>> steamAndClean() {
+    public List<List<String>> getCleanWords() {
         Scanner s = null;
 
         //Throws error if file can't be found
@@ -29,7 +29,7 @@ public class FileFilter implements Filter<String> {
         return meatAndPotatoes(s);
     }
 
-    public List<List<String>> allWords() {
+    public List<List<String>> getDirtyWords() {
         Scanner s = null;
 
         //Throws error if file can't be found
@@ -39,7 +39,7 @@ public class FileFilter implements Filter<String> {
             e.printStackTrace();
         }
 
-        return allWordsHelper(s);
+        return getDirtyWordsHelper(s);
     }
     /*This is where the action happens
     Goes until there are no lines left in the document. It's ok if the last line is blank since most end
@@ -71,7 +71,9 @@ public class FileFilter implements Filter<String> {
 //                    Removing "'" after checking for stop words in order to catch contractions
 //                    Ex. don't, can't, wouldn't, etc.
                     cleanWord = cleanWord.replaceAll("[']", "");
+                    System.out.println(cleanWord);
                     stemmedWord = stem.stem(cleanWord);
+                    System.out.println("Stemmed --> " + stemmedWord);
                     stemSentence.add(stemmedWord);
                 }
             }
@@ -85,7 +87,7 @@ public class FileFilter implements Filter<String> {
         return sentencesList;
     }
 
-    private List<List<String>> allWordsHelper(Scanner scanner) {
+    private List<List<String>> getDirtyWordsHelper(Scanner scanner) {
         List<List<String>> sentencesList = new LinkedList<>();
         List<String> stop = stopWords();
         String cleanWord;
