@@ -5,6 +5,7 @@ import org.apache.commons.cli.*;
 import java.io.*;
 import java.text.ParseException;
 import java.util.List;
+import java.util.Map;
 
 
 public class Main {
@@ -75,9 +76,12 @@ public class Main {
 		    String keyword = a[0];
 		    int num = Integer.parseInt(a[1]);
 		    //Priority queue
-            List<Vector> vectors = makeVectors();
-            for (Vector vector : vectors) {
-                vector.printVector();
+            Map<String, Vector> vectors = makeVectors();
+            Vector keyVector = vectors.remove(keyword);
+            for (int i = 0; i<vectors.size() && i<num; i++) {
+                if (!vectors.get(i).getBase().equalsIgnoreCase(keyword)) {
+                    System.out.println(new CosineSimilarity(keyVector, vectors.));
+                }
             }
 
         }
@@ -90,7 +94,7 @@ public class Main {
 
     }
 
-    public static List<Vector> makeVectors() {
+    public static Map<String, Vector> makeVectors() {
         System.out.println("Calculating all vectors...");
         SimilarityVector vector = new SimilarityVector(clean, unCleanUnique);
 //        System.out.println(vector.getUniqueWords(unCleanUnique));

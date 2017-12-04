@@ -5,7 +5,7 @@ import java.util.*;
 import opennlp.tools.stemmer.*;
 
 public class Vector implements VectorInterface<String> {
-    Object base;
+    String base;
     private SimValue similarity;
     private Map<String, SimValue> vector = new HashMap<>();
 
@@ -34,8 +34,8 @@ public class Vector implements VectorInterface<String> {
         //System.out.println("New simValue: " + vector.get(s).getAsString());
     }
 
-    public boolean contains(String s) {
-        return vector.containsKey(s);
+    public boolean contains(String key) {
+        return vector.containsKey(key);
     }
 
     public List<String> getPair(String key) {
@@ -96,6 +96,14 @@ public class Vector implements VectorInterface<String> {
         return pairs;
     }
 
+    public Set<String> getKeySet() {
+        return vector.keySet();
+    }
+
+    public int getSimValue(String key) {
+        return vector.get(key).getAsInt();
+    }
+
     public class SimValue {
         private int value;
         public SimValue() {
@@ -106,7 +114,7 @@ public class Vector implements VectorInterface<String> {
         }
 
         public void incrementSim() { value++;}
-        public int getSimValue() { return value; }
+        public int getAsInt() { return value; }
         public String getAsString() {
             return String.valueOf(value);
         }

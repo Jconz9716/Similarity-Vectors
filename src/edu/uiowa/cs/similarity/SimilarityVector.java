@@ -2,8 +2,10 @@ package edu.uiowa.cs.similarity;
 
 import opennlp.tools.stemmer.*;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 public class SimilarityVector extends Vector {
     private List<List<String>> cleanedWords;
@@ -60,15 +62,15 @@ public class SimilarityVector extends Vector {
         return vector;
     }
 
-    public List<Vector> makeAllVectors() {
+    public Map<String, Vector> makeAllVectors() {
         List<String> words = getUniqueWords(dirtyWords);
         List<String> done = new LinkedList<>();
-        List<Vector> vectors = new LinkedList<>();
+        Map<String, Vector> vectors = new HashMap<>();
         Vector tmp;
         for (int i = 0; i< getUniqueWords(dirtyWords).size(); i++) {
             tmp = createVector(words.get(i));
             if (!done.contains(tmp.getStemmedBase())) {
-                vectors.add(tmp);
+                vectors.put(words.get(i), tmp);
                 done.add(tmp.getStemmedBase());
             }
         }

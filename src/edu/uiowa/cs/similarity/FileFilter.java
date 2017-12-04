@@ -18,7 +18,6 @@ public class FileFilter implements Filter<String> {
 
     public List<List<String>> getCleanWords() {
         Scanner s = null;
-
         //Throws error if file can't be found
         try {
             s = new Scanner(text);
@@ -41,6 +40,7 @@ public class FileFilter implements Filter<String> {
 
         return getDirtyWordsHelper(s);
     }
+
     /*This is where the action happens
     Goes until there are no lines left in the document. It's ok if the last line is blank since most end
     in a blank line */
