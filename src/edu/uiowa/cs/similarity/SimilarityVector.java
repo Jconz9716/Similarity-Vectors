@@ -63,9 +63,15 @@ public class SimilarityVector extends Vector {
 
     List<Vector> makeAllVectors() {
         List<String> words = getUniqueWords(dirtyWords);
+        List<String> done = new LinkedList<>();
         List<Vector> vectors = new LinkedList<>();
+        Vector tmp;
         for (int i = 0; i< getUniqueWords(dirtyWords).size(); i++) {
-            vectors.add(createVector(words.get(i)));
+            tmp = createVector(words.get(i));
+            if (!done.contains(tmp.getStemmedBase())) {
+                vectors.add(tmp);
+                done.add(tmp.getStemmedBase());
+            }
         }
         return vectors;
     }

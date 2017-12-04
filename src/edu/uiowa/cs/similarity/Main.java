@@ -69,14 +69,15 @@ public class Main {
         }
 
         if (cmd.hasOption("t")) {
-		    String tmp = cmd.getOptionValue("v");
+		    String tmp = cmd.getOptionValue("t");
+		    System.out.println(tmp);
 		    String[] a = tmp.split(",");
 		    String keyword = a[0];
 		    int num = Integer.parseInt(a[1]);
 		    //Priority queue
             List<Vector> vectors = makeVectors();
-            for (int x = 0; x<vectors.size(); x++) {
-                vectors.get(x).printVector();
+            for (Vector vector : vectors) {
+                vector.printVector();
             }
 
         }
@@ -92,8 +93,8 @@ public class Main {
     public static List<Vector> makeVectors() {
         System.out.println("Calculating all vectors...");
         SimilarityVector vector = new SimilarityVector(clean, unCleanUnique);
-        System.out.println(vector.getUniqueWords(unCleanUnique));
-        System.out.println(vector.getUniqueWords(clean));
+//        System.out.println(vector.getUniqueWords(unCleanUnique));
+//        System.out.println(vector.getUniqueWords(clean));
         return vector.makeAllVectors();
     }
 }
