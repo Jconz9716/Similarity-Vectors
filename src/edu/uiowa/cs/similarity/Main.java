@@ -3,12 +3,12 @@ package edu.uiowa.cs.similarity;
 import org.apache.commons.cli.*;
 
 import java.io.*;
-import java.nio.file.Path;
 import java.text.ParseException;
 import java.util.List;
 
 
 public class Main {
+    private static List<List<String>> clean;
 
     public static void main(String[] args) throws ParseException {
         Options options = new Options();
@@ -41,7 +41,7 @@ public class Main {
             File stopWords = new File("stopwords.txt");
 
             FindSentences sentences = new FindSentences(dirty, stopWords);
-            List<List<String>> clean = sentences.filterText();
+            clean = sentences.steamAndClean();
 
             //Prints cleaned sentences. For debugging only
             if (cmd.hasOption("s")) {
@@ -55,10 +55,15 @@ public class Main {
         }
 
         if (cmd.hasOption("v")) {
-            String getVector = cmd.getOptionValue("v");
+            String vectorBase = cmd.getOptionValue("v");
             String printMess = "Calculating vector for: %s...";
-            printMess = String.format(printMess, getVector);
+            printMess = String.format(printMess, vectorBase);
             System.out.println(printMess);
+
+            SimilarityVector vector = new SimilarityVector(vectorBase, clean);
+//          System.out.println(vector.unique());
+            Vector simVector = vector.similarity();
+            simVector.printVector();
         }
 
         if (cmd.hasOption("h")) {

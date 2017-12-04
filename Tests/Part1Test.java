@@ -16,7 +16,7 @@ public class Part1Test {
     @Test
     public void cleanupTest() {
         List<String> s = Arrays.asList("look", "glum", "night-cap");
-        List<List<String>> cleanInput = new FindSentences(new File("cleanup_test.txt"), new File("stopwords.txt")).filterText();
+        List<List<String>> cleanInput = new FindSentences(new File("cleanup_test.txt"), new File("stopwords.txt")).steamAndClean();
         assertFalse("Implement test", true);
     }
 
