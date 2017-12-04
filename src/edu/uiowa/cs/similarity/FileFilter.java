@@ -7,11 +7,11 @@ import java.util.List;
 import java.util.Scanner;
 import opennlp.tools.stemmer.*;
 
-public class FindSentences implements Filter<String> {
+public class FileFilter implements Filter<String> {
     private final File text;
     private final File stopWords;
 
-    public FindSentences(File text, File grosMots) {
+    public FileFilter(File text, File grosMots) {
         this.text = text;
         this.stopWords = grosMots;
     }
@@ -29,6 +29,18 @@ public class FindSentences implements Filter<String> {
         return meatAndPotatoes(s);
     }
 
+    public List<List<String>> allWords() {
+        Scanner s = null;
+
+        //Throws error if file can't be found
+        try {
+            s = new Scanner(text);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return allWords(s);
+    }
     /*This is where the action happens
     Goes until there are no lines left in the document. It's ok if the last line is blank since most end
     in a blank line */
@@ -66,6 +78,44 @@ public class FindSentences implements Filter<String> {
             //Will only print stemmed sentence if the element is not empty
             if (!stemSentence.isEmpty()) {
                 sentencesList.add(index, stemSentence);
+                index++;
+//                System.out.println("Sentence: " + stemSentence);
+            }
+        }
+        return sentencesList;
+    }
+
+    private List<List<String>> allWords(Scanner scanner) {
+        List<List<String>> sentencesList = new LinkedList<>();
+        List<String> stop = stopWords();
+        String cleanWord;
+        String line;
+        String[] sentence;
+
+        scanner.useDelimiter("[.!?]");
+
+        int index = 0;
+        while (scanner.hasNext()) {
+            List<String> sentenceList = new LinkedList<>();
+            line = scanner.next().toLowerCase();
+
+            line = line.replaceAll("\n", " ");
+
+            sentence = line.split(" ");
+
+            //Filters out all of the extra characters, then  stop words
+            for (int i = 0; i < sentence.length; i++) {
+                cleanWord = sentence[i].replaceAll("[;:,--\"\\s]", "");
+                if (!cleanWord.isEmpty() && !stop.contains(cleanWord)) {
+//                    Removing "'" after checking for stop words in order to catch contractions
+//                    Ex. don't, can't, wouldn't, etc.
+                    cleanWord = cleanWord.replaceAll("[']", "");
+                    sentenceList.add(cleanWord);
+                }
+            }
+            //Will only print stemmed sentence if the element is not empty
+            if (!sentenceList.isEmpty()) {
+                sentencesList.add(index, sentenceList);
                 index++;
 //                System.out.println("Sentence: " + stemSentence);
             }

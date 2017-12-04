@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import opennlp.tools.stemmer.*;
 
 public class Vector implements VectorInterface<String> {
     Object base;
@@ -18,20 +19,12 @@ public class Vector implements VectorInterface<String> {
     public Vector(String s) {
         this.base = s;
         this.similarity = new SimValue(0);
-        vector.put(base.toString(), similarity);
     }
 
     public void insert(String s) {
         SimValue x = new SimValue(0);
-        if (vector.isEmpty()) {
-            vector.put(base.toString(), x);
-        }
         vector.put(s, x);
     }
-
-   /* public Map<String, SimValue> getVector() {
-        return vector;
-    }*/
 
     public void increment(String s) {
         SimValue x = new SimValue(0);
@@ -47,8 +40,17 @@ public class Vector implements VectorInterface<String> {
         return vector.containsKey(s);
     }
 
+    public List<String> getPair(String key) {
+        List<String> pair = new LinkedList<>();
+        if (contains(key)) {
+            pair.add(key);
+            pair.add(vector.get(key).getAsString());
+        }
+        return pair;
+    }
+
     //Only for getting the key and value pair, cannot change the sim value
-    public String getPair(String key) {
+    public String getPairAsString(String key) {
         List<Object> pair = new LinkedList<>();
         if (contains(key)) {
             pair.add(key);
@@ -65,14 +67,33 @@ public class Vector implements VectorInterface<String> {
         return this.base.toString();
     }
 
-    public void printVector() {
-        System.out.println("Word: " + getBase() + " -> " + vectorToList());
+    public String getStemmedBase() {
+        PorterStemmer stemmer = new PorterStemmer();
+        return stemmer.stem(this.base.toString());
     }
 
-    public List<String> vectorToList() {
-        List<String> sv = new LinkedList<>();
-        vector.forEach((key, value) -> sv.add(key + " : "  + value.getAsString()));
-        return sv;
+    public void printVector() {
+        if (vector.isEmpty()) {
+            System.err.println("*** The keyword '" + getBase() + "' does not exist in this text ***");
+        }else {
+            List<String> vectorString = new LinkedList<>();
+            System.out.println("Word: " + getBase() + " -> " + printVectorHelper(vectorToList(), vectorString));
+        }
+    }
+
+    private List<String> printVectorHelper(List<List<String>> vls, List<String> vs) {
+        if (vls.isEmpty()){
+            return vs;
+        }else {
+            vs.add(vls.remove(0).toString());
+            return printVectorHelper(vls, vs);
+        }
+    }
+
+    public List<List<String>> vectorToList() {
+        List<List<String>> pairs = new LinkedList<>();
+        vector.forEach((key, value) -> pairs.add(getPair(key)));
+        return pairs;
     }
 
     public class SimValue {

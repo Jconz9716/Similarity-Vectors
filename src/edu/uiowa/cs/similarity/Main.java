@@ -9,6 +9,7 @@ import java.util.List;
 
 public class Main {
     private static List<List<String>> clean;
+    private static List<List<String>> unCleanUnique;
 
     public static void main(String[] args) throws ParseException {
         Options options = new Options();
@@ -17,6 +18,7 @@ public class Main {
         options.addOption("clean", false, "Cleaning file");
         options.addOption("s", false, "Prints sentences");
         options.addOption("v", true, "Generates semantic descriptor vector");
+        options.addOption("t", true, "Calculates top-J similarity");
 
         CommandLineParser parser = new DefaultParser();
 
@@ -32,16 +34,16 @@ public class Main {
 		if (!new File(filename).exists()) {
 			System.err.println("file does not exist "+filename);
 			System.exit(1);
-		}
-		if (cmd.hasOption("clean") && new File(filename).exists()) {
+		}else {
             //Clean file input using Cleanup
             System.out.println("Cleaning file...");
-
             File dirty = new File(filename);
             File stopWords = new File("stopwords.txt");
 
-            FindSentences sentences = new FindSentences(dirty, stopWords);
+            FileFilter sentences = new FileFilter(dirty, stopWords);
             clean = sentences.steamAndClean();
+            unCleanUnique = sentences.allWords();
+
 
             //Prints cleaned sentences. For debugging only
             if (cmd.hasOption("s")) {
@@ -57,13 +59,24 @@ public class Main {
         if (cmd.hasOption("v")) {
             String vectorBase = cmd.getOptionValue("v");
             String printMess = "Calculating vector for: %s...";
-            printMess = String.format(printMess, vectorBase);
             System.out.println(printMess);
+            SimilarityVector vector = new SimilarityVector(clean, unCleanUnique);
+//          System.out.println(vector.getCleanUniqueWords());
+            Vector v = vector.createVector(vectorBase);
+            v.printVector();
+        }
 
-            SimilarityVector vector = new SimilarityVector(vectorBase, clean);
-//          System.out.println(vector.unique());
-            Vector simVector = vector.similarity();
-            simVector.printVector();
+        if (cmd.hasOption("t")) {
+		    String tmp = cmd.getOptionValue("v");
+		    //String[] a = tmp.split(",");
+		    //String keyword = a[0];
+		    //int num = Integer.parseInt(a[1]);
+		    //Priority queue
+            List<Vector> vectors = makeVectors();
+            for (int x = 0; x<vectors.size(); x++) {
+                vectors.get(x).printVector();
+            }
+
         }
 
         if (cmd.hasOption("h")) {
@@ -72,6 +85,13 @@ public class Main {
             System.exit(0);
         }
 
+    }
 
+    public static List<Vector> makeVectors() {
+        System.out.println("Calculating all vectors...");
+        SimilarityVector vector = new SimilarityVector(clean, unCleanUnique);
+        System.out.println(vector.getUniqueWords(unCleanUnique));
+        System.out.println(vector.getUniqueWords(clean));
+        return vector.makeAllVectors();
     }
 }
