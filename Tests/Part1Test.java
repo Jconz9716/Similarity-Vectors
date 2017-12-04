@@ -1,4 +1,4 @@
-import edu.uiowa.cs.similarity.FindSentences;
+import edu.uiowa.cs.similarity.FileFilter;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -8,15 +8,10 @@ import java.io.*;
 import static org.junit.Assert.*;
 
 public class Part1Test {
-
-    public Part1Test() {
-
-    }
-
     @Test
     public void cleanupTest() {
         List<String> s = Arrays.asList("look", "glum", "night-cap");
-        List<List<String>> cleanInput = new FindSentences(new File("cleanup_test.txt"), new File("stopwords.txt")).steamAndClean();
+        List<List<String>> cleanInput = new FileFilter(new File("cleanup_test.txt"), new File("stopwords.txt")).getCleanWords();
         assertFalse("Implement test", true);
     }
 

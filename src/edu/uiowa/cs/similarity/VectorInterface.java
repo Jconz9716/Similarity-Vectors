@@ -7,7 +7,7 @@ public interface VectorInterface<T> {
     public void increment(T x);
     public boolean contains(T x);
     public int size();
-    public T getPair(T x);
+    public T getPairAsString(T x);
     public void printVector();
-    public List<T> vectorToList();
+    public List<List<String>> vectorToList();
 }
