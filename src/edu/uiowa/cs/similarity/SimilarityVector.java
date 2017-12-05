@@ -9,6 +9,7 @@ public class SimilarityVector extends Vector {
     private List<List<String>> dirtyWords;
     private List<String> sentence;
     private String word;
+    private PorterStemmer stemmer = new PorterStemmer();
 
     public SimilarityVector(List<List<String>> cleanedWords, List<List<String>> dirtyWords) {
         this.cleanedWords = cleanedWords;
@@ -68,13 +69,15 @@ public class SimilarityVector extends Vector {
         String w;
         while (!words.isEmpty()) {
             w = words.poll();
-            if (!done.containsKey(w)) {
+            if (!done.containsKey(stemmer.stem(w))) {
                 tmp = createVector(w);
                 //System.out.println(words.get(i));
                 //tmp.printVector();
                 vectors.put(tmp.getStemmedBase(), tmp);
                 done.put(tmp.getStemmedBase(), 0);
-            }
+            }/*else {
+                System.out.println("done already");
+            }*/
         }
         return vectors;
     }

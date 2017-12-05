@@ -43,7 +43,7 @@ public class Main {
 
             long filterStart = System.currentTimeMillis();
             FileFilter sentences = new FileFilter(dirty, stopWords);
-            clean = sentences.getCleanWords();
+            clean = sentences.getCleanAndStemmedWords();
             unCleanUnique = sentences.getDirtyWords();
             long filterStop = System.currentTimeMillis();
             System.out.println("Word filter time: " + (filterStop - filterStart)/1000 + " seconds");
@@ -96,11 +96,12 @@ public class Main {
             PriorityQueue<Value> ordered = new PriorityQueue<>(Collections.reverseOrder());
             String message;
 
-            System.out.println(vectors.containsKey(myVector.cleanWord(keyword)) + " " + keyword);
+            //System.out.println(vectors.containsKey(myVector.cleanWord(keyword)) + " " + keyword);
 
-           /* Iterator<String> i = vectors.keySet().iterator();
-
-            while (i.hasNext()) {
+           //Iterator<String> i = vectors.keySet().iterator();
+            System.out.println("There are " +  + " unique vectors\n");
+            System.out.println("There are " + vectors.size() + " unique vectors\n");
+            /*while (i.hasNext()) {
                 System.out.println(i.next());
             }*/
 

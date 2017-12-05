@@ -63,6 +63,7 @@ public class Vector implements VectorInterface<String> {
 
     public String getBase() {
         if (this.base.isEmpty()) {
+            printVector();
             throw new IllegalStateException();
         }
         return this.base;
