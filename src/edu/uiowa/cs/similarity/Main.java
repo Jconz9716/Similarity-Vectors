@@ -96,11 +96,11 @@ public class Main {
             PriorityQueue<Value> ordered = new PriorityQueue<>(Collections.reverseOrder());
             String message;
 
-            System.out.println(vectors.containsKey(keyword) + " " + keyword);
+            System.out.println(vectors.containsKey(myVector.cleanWord(keyword)) + " " + keyword);
 
-            //Iterator<String> i = vectors.keySet().iterator();
+           /* Iterator<String> i = vectors.keySet().iterator();
 
-            /*while (i.hasNext()) {
+            while (i.hasNext()) {
                 System.out.println(i.next());
             }*/
 
