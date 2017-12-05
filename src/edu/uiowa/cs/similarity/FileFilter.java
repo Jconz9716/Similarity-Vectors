@@ -55,7 +55,7 @@ public class FileFilter implements Filter<String> {
 
         scanner.useDelimiter("[.!?]");
 
-        int index = 0;
+
         while (scanner.hasNext()) {
             List<String> stemSentence = new LinkedList<>();
             line = scanner.next().toLowerCase();
@@ -79,8 +79,7 @@ public class FileFilter implements Filter<String> {
             }
             //Will only print stemmed sentence if the element is not empty
             if (!stemSentence.isEmpty()) {
-                sentencesList.add(index, stemSentence);
-                index++;
+                sentencesList.add(stemSentence);
 //                System.out.println("Sentence: " + stemSentence);
             }
         }

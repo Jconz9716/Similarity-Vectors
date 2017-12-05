@@ -41,21 +41,20 @@ public class SimilarityVector extends Vector {
         //Outer loop increments sentences, inner loop words in each sentence
         for (int i = 0; i<cleanedWords.size(); i++) {
             sentence = cleanedWords.get(i);
-            boolean increase = containsBase(sentence, vector.getStemmedBase());
 //            System.out.println("\n-------------------\n" + "Sentence contains " + vector.getBase() + ": "  + increase);
-            for (int x = 0; x<sentence.size(); x++) {
-                word =  sentence.get(x);
+            if (containsBase(sentence, vector.getStemmedBase())) {
+                for (int x = 0; x<sentence.size(); x++) {
+                    word =  sentence.get(x);
 //                System.out.println(word + " equals " + vector.getStemmedBase() + " --> " + word.equals(vector.getStemmedBase()));
-                if (increase) {  //If current sentence contains the base, increments each word in s.
-                    if (!vector.contains(word)) {
-                        vector.insert(word);
-                    }
-                    if (!word.equals(vector.getStemmedBase())){    //Prevents incrementing sim value of base word
+                        if (!vector.contains(word)) {
+                            vector.insert(word);
+                        }
+                        if (!word.equals(vector.getStemmedBase())){    //Prevents incrementing sim value of base word
 //                        System.out.println("Increasing...");
 //                        System.out.println(word + " isn't equal to " + vector.getBase());
-                        vector.increment(word);
+                            vector.increment(word);
 //                        System.out.println(vector.getPairAsString(word));
-                    }
+                        }
                 }
             }
         }
@@ -64,15 +63,15 @@ public class SimilarityVector extends Vector {
 
     public Map<String, Vector> makeAllVectors() {
         List<String> words = getUniqueWords(dirtyWords);
-        List<String> done = new LinkedList<>();
+        Map<String, Integer> done = new HashMap<>();
         Map<String, Vector> vectors = new HashMap<>();
         Vector tmp;
         for (int i = 0; i< getUniqueWords(dirtyWords).size(); i++) {
-            tmp = createVector(words.get(i));
-            if (!done.contains(tmp.getStemmedBase())) {
+            if (!done.containsKey(words.get(i))) {
+                tmp = createVector(words.get(i));
                 //System.out.println(words.get(i));
                 vectors.put(tmp.getStemmedBase(), tmp);
-                done.add(tmp.getStemmedBase());
+                done.put(tmp.getStemmedBase(), 0);
             }
         }
         return vectors;

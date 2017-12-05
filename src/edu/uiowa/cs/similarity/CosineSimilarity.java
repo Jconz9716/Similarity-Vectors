@@ -5,6 +5,8 @@ import java.util.Iterator;
 public class CosineSimilarity {
     private Vector baseVector;
     private Vector vectorToCompare;
+    private double cosineSimilarity;
+    private double denominator;
 
     public CosineSimilarity() {
         this.baseVector = null;
@@ -19,12 +21,21 @@ public class CosineSimilarity {
         System.out.println(message + calculateCosineSim());
     }
 
-
+    public double getDenominator() {
+        denominator = (Math.sqrt(getMagnitude(baseVector))*Math.sqrt(getMagnitude(vectorToCompare)));
+        if (denominator > 0 && !Double.isNaN(denominator)) {
+            return denominator;
+        }
+        return 0;
+    }
 
     public double calculateCosineSim() {
-        double cosineSimilarity = 0;
+        cosineSimilarity = 0;
+        if (getDenominator() == 0) {
+            return cosineSimilarity;
+        }
         //System.out.println(getDotProduct());
-        cosineSimilarity += getDotProduct()/(Math.sqrt(getMagnitude(baseVector))*Math.sqrt(getMagnitude(vectorToCompare)));
+        cosineSimilarity += getDotProduct()/denominator;
         return cosineSimilarity;
     }
 

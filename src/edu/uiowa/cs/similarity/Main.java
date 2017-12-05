@@ -14,6 +14,7 @@ public class Main {
     private static List<List<String>> unCleanUnique;
 
     public static void main(String[] args) throws ParseException {
+        long start = System.currentTimeMillis();
         Options options = new Options();
         options.addRequiredOption("f", "file", true, "input file to process");
         options.addOption("h", false, "print this help message");
@@ -42,10 +43,12 @@ public class Main {
             File dirty = new File(filename);
             File stopWords = new File("stopwords.txt");
 
+            long filterStart = System.currentTimeMillis();
             FileFilter sentences = new FileFilter(dirty, stopWords);
             clean = sentences.getCleanWords();
             unCleanUnique = sentences.getDirtyWords();
-
+            long filterStop = System.currentTimeMillis();
+            System.out.println("Word filter time: " + (filterStop - filterStart)/1000 + " seconds");
 
             //Prints cleaned sentences. For debugging only
             if (cmd.hasOption("s")) {
@@ -61,9 +64,7 @@ public class Main {
         //Only creates 1 vector and requires an argument to create that vector
         if (cmd.hasOption("v")) {
             String vectorBase = cmd.getOptionValue("v");
-            String printMess = "Calculating vector for %s...\n";
-            printMess = String.format(printMess, vectorBase);
-            System.out.println(printMess);
+            System.out.println("Calculating vector for " + vectorBase + "...\n");
             SimilarityVector vector = new SimilarityVector(clean, unCleanUnique);
 //          System.out.println(vector.getCleanUniqueWords());
             Vector v = vector.createVector(vectorBase);
@@ -76,28 +77,39 @@ public class Main {
             String keyword = a[0];
             int num = Integer.parseInt(a[1]);
 
-            System.out.println("Number of vectors to print: " + num);
+            //System.out.println("Number of vectors to print: " + num);
             System.out.println("Cosine similarity values will be for words compared to " + keyword);
 
 
-            Map<String, Vector> vectors = makeVectors();
+            System.out.println("Calculating all vectors...\n");
+
+            long startMakeVector = System.currentTimeMillis();
             Vector myVector = new Vector();
-            CosineSimilarity similarity = new CosineSimilarity();
+            SimilarityVector v = new SimilarityVector(clean, unCleanUnique);
+            Map<String, Vector> vectors = v.makeAllVectors();
+            long stopMakeVector = System.currentTimeMillis();
+            System.out.println("Vector make time: " + (stopMakeVector - startMakeVector)/1000 + " seconds");
+
+            long startCosine = System.currentTimeMillis();
             Value info;
+            CosineSimilarity similarity = new CosineSimilarity();
             PriorityQueue<Value> ordered = new PriorityQueue<>(Collections.reverseOrder());
             String message;
 
             similarity.setBaseVector(vectors.remove(myVector.cleanWord(keyword)));
             Iterator<String> keyIterator = vectors.keySet().iterator();
-
+            String holyGrail = similarity.getBaseVector().getBase();
 
             while (keyIterator.hasNext()) {
                 similarity.setVectorToCompare(vectors.get(keyIterator.next()));
-                message =  ("Cosine similarity of " + similarity.getBaseVector().getBase() + " -> ");
+                message =  ("Cosine similarity of " + holyGrail + " -> ");
                 message += (similarity.getVectorToCompare().getBase() + ":  ");
                 info = new Value(similarity.calculateCosineSim(), message);
                 ordered.add(info);
             }
+
+            long stopCosine = System.currentTimeMillis();
+            System.out.println("Cosine similarity time: " + (stopCosine - startCosine)/1000 + " seconds");
 
             int count = 0;
             Value toPrint;
@@ -106,6 +118,8 @@ public class Main {
                 System.out.println(toPrint.getValue() + toPrint.getKey());
                 count++;
             }
+            long stop = System.currentTimeMillis();
+            System.out.println((stop - start)/1000 + " seconds");
         }
 
         if (cmd.hasOption("h")) {
@@ -114,14 +128,6 @@ public class Main {
             System.exit(0);
         }
 
-    }
-
-    public static Map<String, Vector> makeVectors() {
-        System.out.println("Calculating all vectors...\n");
-        SimilarityVector vector = new SimilarityVector(clean, unCleanUnique);
-//        System.out.println(vector.getUniqueWords(unCleanUnique));
-//        System.out.println(vector.getUniqueWords(clean));
-        return vector.makeAllVectors();
     }
 
 }
