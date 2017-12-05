@@ -1,8 +1,6 @@
 package edu.uiowa.cs.similarity;
 
-import opennlp.tools.stemmer.PorterStemmer;
 import org.apache.commons.cli.*;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
 import java.text.ParseException;
@@ -119,7 +117,7 @@ public class Main {
                 count++;
             }
             long stop = System.currentTimeMillis();
-            System.out.println((stop - start)/1000 + " seconds");
+            System.out.println("Total execution time: " + (stop - start)/1000 + " seconds");
         }
 
         if (cmd.hasOption("h")) {
