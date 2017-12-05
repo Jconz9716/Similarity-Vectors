@@ -3,45 +3,59 @@ package edu.uiowa.cs.similarity;
 import java.util.Iterator;
 
 public class CosineSimilarity {
-    private final Vector x;
-    private final Vector y;
+    private Vector baseVector;
+    private Vector vectorToCompare;
 
-    public CosineSimilarity(Vector x, Vector y) {
-        this.x = x;
-        this.y = y;
+    public CosineSimilarity() {
+        this.baseVector = null;
+        this.vectorToCompare = null;
     }
 
-    public int getCosineSimilarity() {
-        int cosineSimilarity = 0;
-        cosineSimilarity += getDotProduct()/(Math.sqrt(getMagnitude(x))*Math.sqrt(getMagnitude(y)));
+    public void printCosineSimilarity() {
+        String message = "Cosine similarity of %s -> %s: ";
+        //System.out.println(getBaseVector());
+        //System.out.println(getVectorToCompare().base);
+        message = String.format(message, baseVector.base, vectorToCompare.base);
+        System.out.println(message + calculateCosineSim());
+    }
+
+
+
+    public double calculateCosineSim() {
+        double cosineSimilarity = 0;
+        //System.out.println(getDotProduct());
+        cosineSimilarity += getDotProduct()/(Math.sqrt(getMagnitude(baseVector))*Math.sqrt(getMagnitude(vectorToCompare)));
         return cosineSimilarity;
     }
 
-    public int getDotProduct() {
-        int dotProduct = 0;
-        Iterator<String> keysofX = x.getKeySet().iterator();
-        Iterator<String> keysofY = y.getKeySet().iterator();
+    public double getDotProduct() {
+        double dotProduct = 0;
+        Iterator<String> keysofX = baseVector.getKeySet().iterator();
+        Iterator<String> keysofY = vectorToCompare.getKeySet().iterator();
         String key;
-        if (x.size() < y.size()) {
+        if (baseVector.size() < vectorToCompare.size()) {
             while (keysofX.hasNext()) {
                 key = keysofX.next();
-                if (y.contains(key)) {
-                    dotProduct += x.getSimValue(key) * y.getSimValue(key);
+                if (vectorToCompare.contains(key)) {
+                    //System.out.println(baseVector.getSimValue(key) + " --> " + vectorToCompare.getSimValue(key));
+                    dotProduct += baseVector.getSimValue(key) * vectorToCompare.getSimValue(key);
                 }
             }
         }else {
             while (keysofY.hasNext()) {
                 key = keysofY.next();
-                if (x.contains(key)) {
-                    dotProduct += x.getSimValue(key) * y.getSimValue(key);
+                if (baseVector.contains(key)) {
+                    //System.out.println(baseVector.getSimValue(key) + " --> " + vectorToCompare.getSimValue(key));
+                    dotProduct += vectorToCompare.getSimValue(key) * baseVector.getSimValue(key);
                 }
             }
         }
+        //System.out.println("Dot product: " + dotProduct);
         return dotProduct;
     }
 
-    public int getMagnitude(Vector v) {
-        int magniutde = 0;
+    public double getMagnitude(Vector v) {
+        double magniutde = 0;
         int square;
         Iterator<String> keys = v.getKeySet().iterator();
         String key;
@@ -50,6 +64,23 @@ public class CosineSimilarity {
             square = v.getSimValue(key);
             magniutde += square * square;
         }
+        //System.out.println("Magnitude of " + v.base + ": " + magniutde);
         return magniutde;
+    }
+
+    public void setBaseVector(Vector baseVector) {
+        this.baseVector = baseVector;
+    }
+
+    public Vector getBaseVector() {
+        return baseVector;
+    }
+
+    public void setVectorToCompare(Vector toCompare) {
+        this.vectorToCompare = toCompare;
+    }
+
+    public Vector getVectorToCompare() {
+        return vectorToCompare;
     }
 }

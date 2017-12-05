@@ -1,11 +1,12 @@
 package edu.uiowa.cs.similarity;
 
+import opennlp.tools.stemmer.PorterStemmer;
 import org.apache.commons.cli.*;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
 import java.text.ParseException;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 public class Main {
@@ -32,10 +33,10 @@ public class Main {
 
         assert cmd != null;
         String filename = cmd.getOptionValue("f");
-		if (!new File(filename).exists()) {
-			System.err.println("file does not exist "+filename);
-			System.exit(1);
-		}else {
+        if (!new File(filename).exists()) {
+            System.err.println("file does not exist "+filename);
+            System.exit(1);
+        }else {
             //Clean file input using Cleanup
             System.out.println("Cleaning file...");
             File dirty = new File(filename);
@@ -60,7 +61,7 @@ public class Main {
         //Only creates 1 vector and requires an argument to create that vector
         if (cmd.hasOption("v")) {
             String vectorBase = cmd.getOptionValue("v");
-            String printMess = "Calculating vector for %s...";
+            String printMess = "Calculating vector for %s...\n";
             printMess = String.format(printMess, vectorBase);
             System.out.println(printMess);
             SimilarityVector vector = new SimilarityVector(clean, unCleanUnique);
@@ -70,20 +71,41 @@ public class Main {
         }
 
         if (cmd.hasOption("t")) {
-		    String tmp = cmd.getOptionValue("t");
-		    System.out.println(tmp);
-		    String[] a = tmp.split(",");
-		    String keyword = a[0];
-		    int num = Integer.parseInt(a[1]);
-		    //Priority queue
+            String tmp = cmd.getOptionValue("t");
+            String[] a = tmp.split(",");
+            String keyword = a[0];
+            int num = Integer.parseInt(a[1]);
+
+            System.out.println("Number of vectors to print: " + num);
+            System.out.println("Cosine similarity values will be for words compared to " + keyword);
+
+
             Map<String, Vector> vectors = makeVectors();
-            Vector keyVector = vectors.remove(keyword);
-            for (int i = 0; i<vectors.size() && i<num; i++) {
-                if (!vectors.get(i).getBase().equalsIgnoreCase(keyword)) {
-                    System.out.println(new CosineSimilarity(keyVector, vectors.));
-                }
+            Vector myVector = new Vector();
+            CosineSimilarity similarity = new CosineSimilarity();
+            Value info;
+            PriorityQueue<Value> ordered = new PriorityQueue<>(Collections.reverseOrder());
+            String message;
+
+            similarity.setBaseVector(vectors.remove(myVector.cleanWord(keyword)));
+            Iterator<String> keyIterator = vectors.keySet().iterator();
+
+
+            while (keyIterator.hasNext()) {
+                similarity.setVectorToCompare(vectors.get(keyIterator.next()));
+                message =  ("Cosine similarity of " + similarity.getBaseVector().getBase() + " -> ");
+                message += (similarity.getVectorToCompare().getBase() + ":  ");
+                info = new Value(similarity.calculateCosineSim(), message);
+                ordered.add(info);
             }
 
+            int count = 0;
+            Value toPrint;
+            while (!ordered.isEmpty() && count<num) {
+                toPrint = ordered.poll();
+                System.out.println(toPrint.getValue() + toPrint.getKey());
+                count++;
+            }
         }
 
         if (cmd.hasOption("h")) {
@@ -95,10 +117,11 @@ public class Main {
     }
 
     public static Map<String, Vector> makeVectors() {
-        System.out.println("Calculating all vectors...");
+        System.out.println("Calculating all vectors...\n");
         SimilarityVector vector = new SimilarityVector(clean, unCleanUnique);
 //        System.out.println(vector.getUniqueWords(unCleanUnique));
 //        System.out.println(vector.getUniqueWords(clean));
         return vector.makeAllVectors();
     }
+
 }

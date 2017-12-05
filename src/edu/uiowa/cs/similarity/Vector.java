@@ -62,7 +62,10 @@ public class Vector implements VectorInterface<String> {
     }
 
     public String getBase() {
-        return this.base.toString();
+        if (this.base.isEmpty()) {
+            throw new IllegalStateException();
+        }
+        return this.base;
     }
 
     public String getStemmedBase() {
@@ -102,6 +105,15 @@ public class Vector implements VectorInterface<String> {
 
     public int getSimValue(String key) {
         return vector.get(key).getAsInt();
+    }
+
+    public String cleanWord(String word) {
+        PorterStemmer stem = new PorterStemmer();
+        //Filters out all of the extra characters, then  stop words
+        if (word.isEmpty()) {
+            throw new IllegalStateException();
+        }
+        return stem.stem(word);
     }
 
     public class SimValue {

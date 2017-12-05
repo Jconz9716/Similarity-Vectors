@@ -85,6 +85,7 @@ public class FileFilter implements Filter<String> {
             }
         }
         return sentencesList;
+
     }
 
     private List<List<String>> getDirtyWordsHelper(Scanner scanner) {

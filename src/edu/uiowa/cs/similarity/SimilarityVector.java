@@ -70,7 +70,8 @@ public class SimilarityVector extends Vector {
         for (int i = 0; i< getUniqueWords(dirtyWords).size(); i++) {
             tmp = createVector(words.get(i));
             if (!done.contains(tmp.getStemmedBase())) {
-                vectors.put(words.get(i), tmp);
+                //System.out.println(words.get(i));
+                vectors.put(tmp.getStemmedBase(), tmp);
                 done.add(tmp.getStemmedBase());
             }
         }
