@@ -138,7 +138,7 @@ public class FileFilter implements Filter<String> {
         if (s2 != null)
             while (s2.hasNextLine()) {
                 Scanner tmp = new Scanner(s2.nextLine());
-                tmp.useDelimiter("[\\s]");
+                tmp.useDelimiter("[\\s\n]");
                 while (tmp.hasNext()) {
                     String x = tmp.next();
                     if (!x.isEmpty()){

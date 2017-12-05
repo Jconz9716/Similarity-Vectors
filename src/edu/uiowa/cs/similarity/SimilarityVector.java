@@ -2,14 +2,13 @@ package edu.uiowa.cs.similarity;
 
 import opennlp.tools.stemmer.*;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class SimilarityVector extends Vector {
     private List<List<String>> cleanedWords;
     private List<List<String>> dirtyWords;
+    private List<String> sentence;
+    private String word;
 
     public SimilarityVector(List<List<String>> cleanedWords, List<List<String>> dirtyWords) {
         this.cleanedWords = cleanedWords;
@@ -34,13 +33,12 @@ public class SimilarityVector extends Vector {
     //Doesn't save a word if the sentence doesn't contain the base.
     //Ex. Word: man won't save any [believ, liver, diseas] because !contains man
     public Vector createVector(String base) {
-        List<String> sentence;
-        String word;
-        PorterStemmer stem = new PorterStemmer();
         Vector vector = new Vector(base);
+        Iterator<List<String>> sentences = cleanedWords.iterator();
         //Outer loop increments sentences, inner loop words in each sentence
-        for (int i = 0; i<cleanedWords.size(); i++) {
-            sentence = cleanedWords.get(i);
+        while (sentences.hasNext()) {
+            sentence = sentences.next();
+            //System.out.println(sentence);
 //            System.out.println("\n-------------------\n" + "Sentence contains " + vector.getBase() + ": "  + increase);
             if (containsBase(sentence, vector.getStemmedBase())) {
                 for (int x = 0; x<sentence.size(); x++) {
@@ -58,18 +56,22 @@ public class SimilarityVector extends Vector {
                 }
             }
         }
+        //vector.printVector();
         return vector;
     }
 
     public Map<String, Vector> makeAllVectors() {
-        List<String> words = getUniqueWords(dirtyWords);
+        PriorityQueue<String> words = new PriorityQueue<>(getUniqueWords(dirtyWords));
         Map<String, Integer> done = new HashMap<>();
         Map<String, Vector> vectors = new HashMap<>();
         Vector tmp;
-        for (int i = 0; i< getUniqueWords(dirtyWords).size(); i++) {
-            if (!done.containsKey(words.get(i))) {
-                tmp = createVector(words.get(i));
+        String w;
+        while (!words.isEmpty()) {
+            w = words.poll();
+            if (!done.containsKey(w)) {
+                tmp = createVector(w);
                 //System.out.println(words.get(i));
+                //tmp.printVector();
                 vectors.put(tmp.getStemmedBase(), tmp);
                 done.put(tmp.getStemmedBase(), 0);
             }

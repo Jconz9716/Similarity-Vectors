@@ -82,9 +82,11 @@ public class Main {
             System.out.println("Calculating all vectors...\n");
 
             long startMakeVector = System.currentTimeMillis();
+
             Vector myVector = new Vector();
             SimilarityVector v = new SimilarityVector(clean, unCleanUnique);
             Map<String, Vector> vectors = v.makeAllVectors();
+
             long stopMakeVector = System.currentTimeMillis();
             System.out.println("Vector make time: " + (stopMakeVector - startMakeVector)/1000 + " seconds");
 
@@ -93,6 +95,14 @@ public class Main {
             CosineSimilarity similarity = new CosineSimilarity();
             PriorityQueue<Value> ordered = new PriorityQueue<>(Collections.reverseOrder());
             String message;
+
+            System.out.println(vectors.containsKey(keyword) + " " + keyword);
+
+            //Iterator<String> i = vectors.keySet().iterator();
+
+            /*while (i.hasNext()) {
+                System.out.println(i.next());
+            }*/
 
             similarity.setBaseVector(vectors.remove(myVector.cleanWord(keyword)));
             Iterator<String> keyIterator = vectors.keySet().iterator();
