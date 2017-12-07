@@ -2,12 +2,14 @@ package edu.uiowa.cs.similarity;
 
 import opennlp.tools.stemmer.*;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 public class SimilarityVector extends Vector {
     private List<List<String>> cleanedWords;
     private List<List<String>> dirtyWords;
+    private List<String> sentence;
+    private String word;
+    private PorterStemmer stem = new PorterStemmer();
 
     public SimilarityVector(List<List<String>> cleanedWords, List<List<String>> dirtyWords) {
         this.cleanedWords = cleanedWords;
@@ -32,27 +34,21 @@ public class SimilarityVector extends Vector {
     //Doesn't save a word if the sentence doesn't contain the base.
     //Ex. Word: man won't save any [believ, liver, diseas] because !contains man
     public Vector createVector(String base) {
-        List<String> sentence;
-        String word;
-        PorterStemmer stem = new PorterStemmer();
         Vector vector = new Vector(base);
+        Iterator<List<String>> sentences = cleanedWords.iterator();
+        Iterator<String> s;
         //Outer loop increments sentences, inner loop words in each sentence
-        for (int i = 0; i<cleanedWords.size(); i++) {
-            sentence = cleanedWords.get(i);
-            boolean increase = containsBase(sentence, vector.getStemmedBase());
-//            System.out.println("\n-------------------\n" + "Sentence contains " + vector.getBase() + ": "  + increase);
-            for (int x = 0; x<sentence.size(); x++) {
-                word =  sentence.get(x);
-//                System.out.println(word + " equals " + vector.getStemmedBase() + " --> " + word.equals(vector.getStemmedBase()));
-                if (increase) {  //If current sentence contains the base, increments each word in s.
-                    if (!vector.contains(word)) {
+        while (sentences.hasNext()) {
+            sentence = sentences.next();
+            if (contains(sentence, vector.getStemmedBase())) {
+                s = sentence.iterator();
+                while (s.hasNext()) {
+                    word =  s.next();
+                    if (!vector.contains(word) && !word.isEmpty()) {
                         vector.insert(word);
                     }
                     if (!word.equals(vector.getStemmedBase())){    //Prevents incrementing sim value of base word
-//                        System.out.println("Increasing...");
-//                        System.out.println(word + " isn't equal to " + vector.getBase());
                         vector.increment(word);
-//                        System.out.println(vector.getPairAsString(word));
                     }
                 }
             }
@@ -60,28 +56,26 @@ public class SimilarityVector extends Vector {
         return vector;
     }
 
-    public List<Vector> makeAllVectors() {
-        List<String> words = getUniqueWords(dirtyWords);
-        List<String> done = new LinkedList<>();
-        List<Vector> vectors = new LinkedList<>();
+    public Map<String, Vector> makeAllVectors() {
+        Iterator<String> words = getUniqueWords(dirtyWords).iterator();
+        Map<String, Integer> done = new HashMap<>();
+        Map<String, Vector> vectors = new HashMap<>();
         Vector tmp;
-        for (int i = 0; i< getUniqueWords(dirtyWords).size(); i++) {
-            tmp = createVector(words.get(i));
-            if (!done.contains(tmp.getStemmedBase())) {
-                vectors.add(tmp);
-                done.add(tmp.getStemmedBase());
+        String w;
+        while (words.hasNext()) {
+            w = words.next();
+            if (!done.containsKey(stem.stem(w)) && !stem.stem(w).isEmpty()) {
+                tmp = createVector(w);
+                vectors.put(tmp.getStemmedBase(), tmp);
+                done.put(tmp.getStemmedBase(), 0);
             }
         }
         return vectors;
     }
 
-    private boolean containsBase(List<String> sentence, String x) {
-        return sentence.contains(x);
-    }
+    private boolean contains(List<String> sentence, String x) { return sentence.contains(x); }
 
-    private List<List<String>> getCleanedWords() {
-        return cleanedWords;
-    }
+    private List<List<String>> getCleanedWords() { return cleanedWords; }
 
     private List<List<String>> getDirtyWords() { return dirtyWords; }
 }

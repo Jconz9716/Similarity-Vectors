@@ -5,18 +5,15 @@ import java.util.*;
 import opennlp.tools.stemmer.*;
 
 public class Vector implements VectorInterface<String> {
-    Object base;
-    private SimValue similarity;
+    String base;
     private Map<String, SimValue> vector = new HashMap<>();
 
     public Vector() {
         this.base = null;
-        this.similarity = new SimValue(0);
     }
 
     public Vector(String s) {
         this.base = s;
-        this.similarity = new SimValue(0);
     }
 
     public void insert(String s) {
@@ -34,8 +31,8 @@ public class Vector implements VectorInterface<String> {
         //System.out.println("New simValue: " + vector.get(s).getAsString());
     }
 
-    public boolean contains(String s) {
-        return vector.containsKey(s);
+    public boolean contains(String key) {
+        return vector.containsKey(key);
     }
 
     public List<String> getPair(String key) {
@@ -62,12 +59,16 @@ public class Vector implements VectorInterface<String> {
     }
 
     public String getBase() {
-        return this.base.toString();
+        if (this.base.isEmpty()) {
+            System.out.println(this.getKeySet());
+            throw new IllegalStateException();
+        }
+        return this.base;
     }
 
     public String getStemmedBase() {
         PorterStemmer stemmer = new PorterStemmer();
-        return stemmer.stem(getBase());
+        return stemmer.stem(this.base);
     }
 
     public void printVector() {
@@ -96,17 +97,31 @@ public class Vector implements VectorInterface<String> {
         return pairs;
     }
 
+    public Set<String> getKeySet() {
+        return vector.keySet();
+    }
+
+    public int getSimValue(String key) {
+        return vector.get(key).getAsInt();
+    }
+
+    public String cleanWord(String word) {
+        PorterStemmer stem = new PorterStemmer();
+        //Filters out all of the extra characters, then  stop words
+        if (word.isEmpty()) {
+            throw new IllegalStateException();
+        }
+        return stem.stem(word);
+    }
+
     public class SimValue {
         private int value;
-        public SimValue() {
-            this.value = 0;
-        }
         public SimValue(int i) {
             this.value = i;
         }
 
         public void incrementSim() { value++;}
-        public int getSimValue() { return value; }
+        public int getAsInt() { return value; }
         public String getAsString() {
             return String.valueOf(value);
         }

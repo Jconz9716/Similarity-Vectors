@@ -11,7 +11,7 @@ public class Part1Test {
     @Test
     public void cleanupTest() {
         List<String> s = Arrays.asList("look", "glum", "night-cap");
-        List<List<String>> cleanInput = new FileFilter(new File("cleanup_test.txt"), new File("stopwords.txt")).getCleanWords();
+        List<List<String>> cleanInput = new FileFilter(new File("cleanup_test.txt"), new File("stopwords.txt")).getCleanAndStemmedWords();
         assertFalse("Implement test", true);
     }
 
