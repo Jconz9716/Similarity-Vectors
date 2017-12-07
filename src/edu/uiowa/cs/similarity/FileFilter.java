@@ -104,14 +104,14 @@ public class FileFilter implements Filter<String> {
             line = scanner.next().toLowerCase();
 
             line = line.replaceAll("\n", " ");
-            line = line.replaceAll("-(\\s*-)+", " ");
+            line = line.replaceAll("--", " ");
 
             sentence = line.split(" ");
 
             //Filters out all of the extra characters, then  stop words
             for (int i = 0; i < sentence.length; i++) {
-                cleanWord = sentence[i].replaceAll("[;:,\".*()\\s]", "");
-                cleanWord = cleanWord.replaceAll("[^a-zA-Z]", "");
+                cleanWord = sentence[i].replaceAll("[0123456789@#$%;:,\".*()_\\s]", "");
+                //cleanWord = cleanWord.replaceAll("[^a-zA-Z]", "");
                 //System.out.println(cleanWord);
                 if (!cleanWord.isEmpty() && !stop.contains(cleanWord)) {
 //                    Removing "'" after checking for stop words in order to catch contractions
@@ -130,7 +130,7 @@ public class FileFilter implements Filter<String> {
         return sentencesList;
     }
 
-    //Calculate number of unique words in file
+    //Calculates total number of sentences, not unique words
     public int getNumUniqueWords() {
         Iterator<List<String>> sentences = getCleanAndStemmedWords().iterator();
         int count = 0;

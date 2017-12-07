@@ -63,7 +63,7 @@ public class Vector implements VectorInterface<String> {
 
     public String getBase() {
         if (this.base.isEmpty()) {
-            printVector();
+            System.out.println(this.getKeySet());
             throw new IllegalStateException();
         }
         return this.base;
@@ -71,7 +71,7 @@ public class Vector implements VectorInterface<String> {
 
     public String getStemmedBase() {
         PorterStemmer stemmer = new PorterStemmer();
-        return stemmer.stem(getBase());
+        return stemmer.stem(this.base);
     }
 
     public void printVector() {

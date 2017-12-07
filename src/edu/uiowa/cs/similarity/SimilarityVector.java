@@ -12,6 +12,7 @@ public class SimilarityVector extends Vector {
     private PorterStemmer stemmer = new PorterStemmer();
 
     public SimilarityVector(List<List<String>> cleanedWords, List<List<String>> dirtyWords) {
+        super();
         this.cleanedWords = cleanedWords;
         this.dirtyWords = dirtyWords;
     }
@@ -41,7 +42,7 @@ public class SimilarityVector extends Vector {
             sentence = sentences.next();
             //System.out.println(sentence);
 //            System.out.println("\n-------------------\n" + "Sentence contains " + vector.getBase() + ": "  + increase);
-            if (containsBase(sentence, vector.getStemmedBase())) {
+            if (contains(sentence, vector.getStemmedBase())) {
                 for (int x = 0; x<sentence.size(); x++) {
                     word =  sentence.get(x);
 //                System.out.println(word + " equals " + vector.getStemmedBase() + " --> " + word.equals(vector.getStemmedBase()));
@@ -57,7 +58,6 @@ public class SimilarityVector extends Vector {
                 }
             }
         }
-        //vector.printVector();
         return vector;
     }
 
@@ -69,20 +69,19 @@ public class SimilarityVector extends Vector {
         String w;
         while (!words.isEmpty()) {
             w = words.poll();
-            if (!done.containsKey(stemmer.stem(w))) {
+            //System.out.println(w);
+            if (!done.containsKey(stemmer.stem(w)) && !stemmer.stem(w).isEmpty()) {
                 tmp = createVector(w);
                 //System.out.println(words.get(i));
                 //tmp.printVector();
                 vectors.put(tmp.getStemmedBase(), tmp);
                 done.put(tmp.getStemmedBase(), 0);
-            }/*else {
-                System.out.println("done already");
-            }*/
+            }
         }
         return vectors;
     }
 
-    private boolean containsBase(List<String> sentence, String x) {
+    private boolean contains(List<String> sentence, String x) {
         return sentence.contains(x);
     }
 

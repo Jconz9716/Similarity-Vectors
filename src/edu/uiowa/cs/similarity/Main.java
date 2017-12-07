@@ -20,6 +20,7 @@ public class Main {
         options.addOption("s", false, "Prints sentences");
         options.addOption("v", true, "Generates semantic descriptor vector");
         options.addOption("t", true, "Calculates top-J similarity");
+        options.addOption("m", true, "More similarity");
 
         CommandLineParser parser = new DefaultParser();
 
@@ -65,8 +66,14 @@ public class Main {
             System.out.println("Calculating vector for " + vectorBase + "...\n");
             SimilarityVector vector = new SimilarityVector(clean, unCleanUnique);
 //          System.out.println(vector.getCleanUniqueWords());
-            Vector v = vector.createVector(vectorBase);
-            v.printVector();
+            Map<String, Vector> vectors = vector.makeAllVectors();
+            Iterator<String> w = vectors.keySet().iterator();
+
+            int i = 0;
+            while (w.hasNext() && i<5) {
+                vectors.get(w.next()).printVector();
+                i++;
+            }
         }
 
         if (cmd.hasOption("t")) {
@@ -75,57 +82,87 @@ public class Main {
             String keyword = a[0];
             int num = Integer.parseInt(a[1]);
 
-            //System.out.println("Number of vectors to print: " + num);
-            System.out.println("Cosine similarity values will be for words compared to " + keyword);
-
-
             System.out.println("Calculating all vectors...\n");
-
             long startMakeVector = System.currentTimeMillis();
-
             Vector myVector = new Vector();
             SimilarityVector v = new SimilarityVector(clean, unCleanUnique);
             Map<String, Vector> vectors = v.makeAllVectors();
-
             long stopMakeVector = System.currentTimeMillis();
-            System.out.println("Vector make time: " + (stopMakeVector - startMakeVector)/1000 + " seconds");
-
-            long startCosine = System.currentTimeMillis();
-            Value info;
-            CosineSimilarity similarity = new CosineSimilarity();
-            PriorityQueue<Value> ordered = new PriorityQueue<>(Collections.reverseOrder());
+            String holyGrail;
             String message;
-
-            //System.out.println(vectors.containsKey(myVector.cleanWord(keyword)) + " " + keyword);
-
-           //Iterator<String> i = vectors.keySet().iterator();
-            System.out.println("There are " +  + " unique vectors\n");
-            System.out.println("There are " + vectors.size() + " unique vectors\n");
-            /*while (i.hasNext()) {
-                System.out.println(i.next());
-            }*/
-
-            similarity.setBaseVector(vectors.remove(myVector.cleanWord(keyword)));
-            Iterator<String> keyIterator = vectors.keySet().iterator();
-            String holyGrail = similarity.getBaseVector().getBase();
-
-            while (keyIterator.hasNext()) {
-                similarity.setVectorToCompare(vectors.get(keyIterator.next()));
-                message =  ("Cosine similarity of " + holyGrail + " -> ");
-                message += (similarity.getVectorToCompare().getBase() + ":  ");
-                info = new Value(similarity.calculateCosineSim(), message);
-                ordered.add(info);
-            }
-
-            long stopCosine = System.currentTimeMillis();
-            System.out.println("Cosine similarity time: " + (stopCosine - startCosine)/1000 + " seconds");
-
+            Value info;
             int count = 0;
-            Value toPrint;
-            while (!ordered.isEmpty() && count<num) {
-                toPrint = ordered.poll();
-                System.out.println(toPrint.getValue() + toPrint.getKey());
-                count++;
+            PriorityQueue<Value> eucOrdered = new PriorityQueue<>(Collections.reverseOrder());
+
+            System.out.println("Vector make time: " + (stopMakeVector - startMakeVector) / 1000 + " seconds");
+            System.out.println("There are " + vectors.size() + " unique vectors\n");
+
+            if (cmd.hasOption("m")) {
+                long startEuc = System.currentTimeMillis();
+                String sim = cmd.getOptionValue("m");
+                EuclideanDistance distance = new EuclideanDistance();
+                String key;
+
+                if (sim.equalsIgnoreCase("euc")) {
+                    System.out.println("The Euclidean distance will be based on the similarity vector of " + keyword);
+                    System.out.println("");
+                    Iterator<String> eucKeyIterator = vectors.keySet().iterator();
+                    distance.setBaseVector(vectors.get(myVector.cleanWord(keyword)));
+                    holyGrail = distance.getBaseVector().getBase();
+
+                    PriorityQueue<String> allKeys = new PriorityQueue<>();
+                    while (eucKeyIterator.hasNext()) {
+                        key = eucKeyIterator.next();
+                        if (!key.equalsIgnoreCase(myVector.cleanWord(keyword))){
+                            allKeys.addAll(vectors.keySet());
+                            distance.setVectorToCompare(vectors.get(key));
+                            message =  ("Euclidean distance of " + holyGrail + " -> ");
+                            message += (distance.getVectorToCompare().getBase() + ":  ");
+                            info = new Value(distance.calcEuclidean(allKeys), message);
+                            eucOrdered.add(info);
+                        }
+                    }
+
+                    long stopEuc = System.currentTimeMillis();
+                    Value toPrint;
+                    while (!eucOrdered.isEmpty() && count<num) {
+                        toPrint = eucOrdered.poll();
+                        System.out.println(toPrint.getValue() + toPrint.getKey());
+                        count++;
+                    }
+                    System.out.println("\nEuclidean distance time: " + (stopEuc - startEuc)/1000 + " seconds");
+
+                } else {
+//                  Normalized distance
+                    String x = "";
+                }
+
+            }else {
+                long startCosine = System.currentTimeMillis();
+                PriorityQueue<Value> ordered = new PriorityQueue<>(Collections.reverseOrder());
+                System.out.println("Cosine similarity values will be for words compared to " + keyword);
+                CosineSimilarity similarity = new CosineSimilarity();
+                similarity.setBaseVector(vectors.remove(myVector.cleanWord(keyword)));
+                Iterator<String> cosKeyIterator = vectors.keySet().iterator();
+                holyGrail = similarity.getBaseVector().getBase();
+
+                while (cosKeyIterator.hasNext()) {
+                    similarity.setVectorToCompare(vectors.get(cosKeyIterator.next()));
+                    message =  ("Cosine similarity of " + holyGrail + " -> ");
+                    message += (similarity.getVectorToCompare().getBase() + ":  ");
+                    info = new Value(similarity.calculateCosineSim(), message);
+                    ordered.add(info);
+                }
+
+                long stopCosine = System.currentTimeMillis();
+                System.out.println("Cosine similarity time: " + (stopCosine - startCosine)/1000 + " seconds");
+
+                Value toPrint;
+                while (!ordered.isEmpty() && count<num) {
+                    toPrint = ordered.poll();
+                    System.out.println(toPrint.getValue() + toPrint.getKey());
+                    count++;
+                }
             }
             long stop = System.currentTimeMillis();
             System.out.println("Total execution time: " + (stop - start)/1000 + " seconds");
