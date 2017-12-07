@@ -22,7 +22,7 @@ public class CosineSimilarity {
     }
 
     public double getDenominator() {
-        denominator = (Math.sqrt(getMagnitude(baseVector))*Math.sqrt(getMagnitude(vectorToCompare)));
+        denominator = (Math.sqrt(Similarity.getMagnitude(baseVector))*Math.sqrt(Similarity.getMagnitude(vectorToCompare)));
         if (denominator > 0 && !Double.isNaN(denominator)) {
             return denominator;
         }
@@ -63,20 +63,6 @@ public class CosineSimilarity {
         }
         //System.out.println("Dot product: " + dotProduct);
         return dotProduct;
-    }
-
-    public double getMagnitude(Vector v) {
-        double magniutde = 0;
-        int square;
-        Iterator<String> keys = v.getKeySet().iterator();
-        String key;
-        while (keys.hasNext()) {
-            key = keys.next();
-            square = v.getSimValue(key);
-            magniutde += square * square;
-        }
-        //System.out.println("Magnitude of " + v.base + ": " + magniutde);
-        return magniutde;
     }
 
     public void setBaseVector(Vector baseVector) {

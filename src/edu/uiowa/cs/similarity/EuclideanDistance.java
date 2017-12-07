@@ -9,18 +9,21 @@ public class EuclideanDistance {
     private Vector baseVector;
     private Vector toCompareVector;
     private PriorityQueue<String> allKeys = new PriorityQueue<>();
+    Map<String, Integer> done = new HashMap<>();
+    private Double baseMagnitude;
 
-    public EuclideanDistance() {
-        this.baseVector = null;
+    public EuclideanDistance(Vector baseVector) {
+        this.baseVector = baseVector;
+        this.baseMagnitude = Similarity.getMagnitude(baseVector);
         this.toCompareVector = null;
     }
-    public double calcEuclidean() {
+    public double getEucDistance() {
         String key;
         Double distance = 0d;
 
-        //System.out.println("Vector: " + toCompareVector.getBase());
+        done.clear();
 
-        Map<String, Integer> done = new HashMap<>();
+        //Adds all words from both vectors
         allKeys.addAll(baseVector.getKeySet());
         allKeys.addAll(toCompareVector.getKeySet());
 
@@ -43,8 +46,33 @@ public class EuclideanDistance {
         return -Math.sqrt(distance);
     }
 
-    public double getNormalizedEuclideanDistance() {
-        return 0d;
+    public double getNormEucDistance() {
+        String key;
+        Double distance = 0d;
+        done.clear();
+
+        Double compareMagnitude = Similarity.getMagnitude(toCompareVector);
+
+        //Adds all words from both vectors
+        allKeys.addAll(baseVector.getKeySet());
+        allKeys.addAll(toCompareVector.getKeySet());
+
+        while (!allKeys.isEmpty()) {
+            key = allKeys.poll();
+            if (!done.containsKey(key)) {
+                if (baseVector.contains(key) && toCompareVector.contains(key)) {
+                    distance += Math.pow(baseVector.getSimValue(key)/baseMagnitude -
+                            toCompareVector.getSimValue(key)/compareMagnitude, 2);
+                } else if (baseVector.contains(key) && !toCompareVector.contains(key)) {
+                    distance += Math.pow(baseVector.getSimValue(key)/baseMagnitude, 2);
+                }else if (toCompareVector.contains(key) && !baseVector.contains(key)){
+                    distance += Math.pow(-toCompareVector.getSimValue(key)/compareMagnitude, 2);
+                }
+                done.put(key, 0);
+                }
+            }
+
+        return -Math.sqrt(distance);
     }
 
     public void setBaseVector(Vector base) {

@@ -6,17 +6,14 @@ import opennlp.tools.stemmer.*;
 
 public class Vector implements VectorInterface<String> {
     String base;
-    private SimValue similarity;
     private Map<String, SimValue> vector = new HashMap<>();
 
     public Vector() {
         this.base = null;
-        this.similarity = new SimValue(0);
     }
 
     public Vector(String s) {
         this.base = s;
-        this.similarity = new SimValue(0);
     }
 
     public void insert(String s) {
@@ -119,9 +116,6 @@ public class Vector implements VectorInterface<String> {
 
     public class SimValue {
         private int value;
-        public SimValue() {
-            this.value = 0;
-        }
         public SimValue(int i) {
             this.value = i;
         }

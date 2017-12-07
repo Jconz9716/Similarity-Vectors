@@ -100,14 +100,14 @@ public class Main {
             if (cmd.hasOption("m")) {
                 long startEuc = System.currentTimeMillis();
                 String sim = cmd.getOptionValue("m");
-                EuclideanDistance distance = new EuclideanDistance();
+                EuclideanDistance distance = new EuclideanDistance(vectors.get(myVector.cleanWord(keyword)));
                 String key;
 
                 if (sim.equalsIgnoreCase("euc")) {
                     System.out.println("The Euclidean distance will be based on the similarity vector of " + keyword);
                     System.out.println("");
                     Iterator<String> eucKeyIterator = vectors.keySet().iterator();
-                    distance.setBaseVector(vectors.get(myVector.cleanWord(keyword)));
+                    //distance.setBaseVector(vectors.get(myVector.cleanWord(keyword)));
                     holyGrail = distance.getBaseVector().getBase();
 
                     while (eucKeyIterator.hasNext()) {
@@ -116,7 +116,7 @@ public class Main {
                             distance.setVectorToCompare(vectors.get(key));
                             message =  ("Euclidean distance of " + holyGrail + " -> ");
                             message += (distance.getVectorToCompare().getBase() + ":  ");
-                            info = new Value(distance.calcEuclidean(), message);
+                            info = new Value(distance.getEucDistance(), message);
                             eucOrdered.add(info);
                         }
                     }
@@ -130,9 +130,35 @@ public class Main {
                     }
                     System.out.println("\nEuclidean distance time: " + (stopEuc - startEuc)/1000 + " seconds");
 
+//                  Normalized vectors
                 } else {
-//                  Normalized distance
-                    String x = "";
+                    System.out.println("The euclidean distance between normalized vectors for " + keyword);
+                    System.out.println("");
+                    Iterator<String> eucKeyIterator = vectors.keySet().iterator();
+                    //distance.setBaseVector(vectors.get(myVector.cleanWord(keyword)));
+                    holyGrail = distance.getBaseVector().getBase();
+
+                    while (eucKeyIterator.hasNext()) {
+                        key = eucKeyIterator.next();
+                        if (!key.equalsIgnoreCase(myVector.cleanWord(keyword))){
+                            distance.setVectorToCompare(vectors.get(key));
+                            message =  ("Euclidean distance of " + holyGrail + " -> ");
+                            message += (distance.getVectorToCompare().getBase() + ":  ");
+                            info = new Value(distance.getNormEucDistance(), message);
+                            if (!Double.isNaN(info.getKey())) {
+                                eucOrdered.add(info);
+                            }
+                        }
+                    }
+
+                    long stopEuc = System.currentTimeMillis();
+                    Value toPrint;
+                    while (!eucOrdered.isEmpty() && count<num) {
+                        toPrint = eucOrdered.poll();
+                        System.out.println(toPrint.getValue() + toPrint.getKey());
+                        count++;
+                    }
+                    System.out.println("\nEuclidean distance time: " + (stopEuc - startEuc)/1000 + " seconds");
                 }
 
             }else {

@@ -9,10 +9,9 @@ public class SimilarityVector extends Vector {
     private List<List<String>> dirtyWords;
     private List<String> sentence;
     private String word;
-    private PorterStemmer stemmer = new PorterStemmer();
+    private PorterStemmer stem = new PorterStemmer();
 
     public SimilarityVector(List<List<String>> cleanedWords, List<List<String>> dirtyWords) {
-        super();
         this.cleanedWords = cleanedWords;
         this.dirtyWords = dirtyWords;
     }
@@ -37,24 +36,20 @@ public class SimilarityVector extends Vector {
     public Vector createVector(String base) {
         Vector vector = new Vector(base);
         Iterator<List<String>> sentences = cleanedWords.iterator();
+        Iterator<String> s;
         //Outer loop increments sentences, inner loop words in each sentence
         while (sentences.hasNext()) {
             sentence = sentences.next();
-            //System.out.println(sentence);
-//            System.out.println("\n-------------------\n" + "Sentence contains " + vector.getBase() + ": "  + increase);
             if (contains(sentence, vector.getStemmedBase())) {
-                for (int x = 0; x<sentence.size(); x++) {
-                    word =  sentence.get(x);
-//                System.out.println(word + " equals " + vector.getStemmedBase() + " --> " + word.equals(vector.getStemmedBase()));
-                        if (!vector.contains(word)) {
-                            vector.insert(word);
-                        }
-                        if (!word.equals(vector.getStemmedBase())){    //Prevents incrementing sim value of base word
-//                        System.out.println("Increasing...");
-//                        System.out.println(word + " isn't equal to " + vector.getBase());
-                            vector.increment(word);
-//                        System.out.println(vector.getPairAsString(word));
-                        }
+                s = sentence.iterator();
+                while (s.hasNext()) {
+                    word =  s.next();
+                    if (!vector.contains(word) && !word.isEmpty()) {
+                        vector.insert(word);
+                    }
+                    if (!word.equals(vector.getStemmedBase())){    //Prevents incrementing sim value of base word
+                        vector.increment(word);
+                    }
                 }
             }
         }
@@ -62,18 +57,15 @@ public class SimilarityVector extends Vector {
     }
 
     public Map<String, Vector> makeAllVectors() {
-        PriorityQueue<String> words = new PriorityQueue<>(getUniqueWords(dirtyWords));
+        Iterator<String> words = getUniqueWords(dirtyWords).iterator();
         Map<String, Integer> done = new HashMap<>();
         Map<String, Vector> vectors = new HashMap<>();
         Vector tmp;
         String w;
-        while (!words.isEmpty()) {
-            w = words.poll();
-            //System.out.println(w);
-            if (!done.containsKey(stemmer.stem(w)) && !stemmer.stem(w).isEmpty()) {
+        while (words.hasNext()) {
+            w = words.next();
+            if (!done.containsKey(stem.stem(w)) && !stem.stem(w).isEmpty()) {
                 tmp = createVector(w);
-                //System.out.println(words.get(i));
-                //tmp.printVector();
                 vectors.put(tmp.getStemmedBase(), tmp);
                 done.put(tmp.getStemmedBase(), 0);
             }
@@ -81,13 +73,9 @@ public class SimilarityVector extends Vector {
         return vectors;
     }
 
-    private boolean contains(List<String> sentence, String x) {
-        return sentence.contains(x);
-    }
+    private boolean contains(List<String> sentence, String x) { return sentence.contains(x); }
 
-    private List<List<String>> getCleanedWords() {
-        return cleanedWords;
-    }
+    private List<List<String>> getCleanedWords() { return cleanedWords; }
 
     private List<List<String>> getDirtyWords() { return dirtyWords; }
 }
