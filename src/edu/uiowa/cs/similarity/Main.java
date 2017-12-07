@@ -110,15 +110,13 @@ public class Main {
                     distance.setBaseVector(vectors.get(myVector.cleanWord(keyword)));
                     holyGrail = distance.getBaseVector().getBase();
 
-                    PriorityQueue<String> allKeys = new PriorityQueue<>();
                     while (eucKeyIterator.hasNext()) {
                         key = eucKeyIterator.next();
                         if (!key.equalsIgnoreCase(myVector.cleanWord(keyword))){
-                            allKeys.addAll(vectors.keySet());
                             distance.setVectorToCompare(vectors.get(key));
                             message =  ("Euclidean distance of " + holyGrail + " -> ");
                             message += (distance.getVectorToCompare().getBase() + ":  ");
-                            info = new Value(distance.calcEuclidean(allKeys), message);
+                            info = new Value(distance.calcEuclidean(), message);
                             eucOrdered.add(info);
                         }
                     }
