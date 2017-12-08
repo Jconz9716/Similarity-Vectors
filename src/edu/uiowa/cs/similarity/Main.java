@@ -19,7 +19,7 @@ public class Main {
         options.addOption("clean", false, "Cleaning file");
         options.addOption("s", false, "Prints sentences");
         options.addOption("v", false, "Generates semantic descriptor vector");
-        options.addOption("t", true, "Calculates top-J similarity");
+        options.addOption("t", true, "Cosine similarity");
         options.addOption("m", true, "More similarity");
         options.addOption("k", true, "K-means");
 

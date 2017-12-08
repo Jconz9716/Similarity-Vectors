@@ -21,6 +21,10 @@ public class Vector implements VectorInterface<String> {
         vector.put(s, x);
     }
 
+    public void insert(String s, SimValue v) {
+        vector.put(s, v);
+    }
+
     public void increment(String s) {
         SimValue x = new SimValue(0);
         if (!vector.containsKey(s)) {

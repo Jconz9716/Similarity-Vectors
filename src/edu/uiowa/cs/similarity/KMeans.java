@@ -2,6 +2,7 @@ package edu.uiowa.cs.similarity;
 
 import clojure.core.Vec;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -32,14 +33,24 @@ public class KMeans {
     }
 
     public void calcCentroid() {
+        List<Vector> nCentroids = new LinkedList<>();
         Iterator<List<Vector>> clusterIterator = clusters.iterator();
+        Iterator<Vector> cluster;
         Iterator<Vector> vectorIterator;
         Vector centroid;
+        Vector v;
         int num = centroids.size();
 
         //Recalculating centroid values
         for (int i = 0; i<num; i++) {
             centroid = centroids.remove(0);
+            while (clusterIterator.hasNext()) {
+                cluster = clusterIterator.next().iterator();
+                while (cluster.hasNext()) {
+                    v = cluster.next();
+
+                }
+            }
 
         }
     }
