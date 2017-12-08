@@ -98,6 +98,7 @@ public class Vector implements VectorInterface<String> {
         }
     }
 
+    //Converts vector to list to help with debugging
     public List<List<String>> vectorToList() {
         List<List<String>> pairs = new LinkedList<>();
         List<String> listBase = new LinkedList<>();
