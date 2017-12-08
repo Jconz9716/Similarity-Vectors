@@ -18,9 +18,10 @@ public class Main {
         options.addOption("h", false, "print this help message");
         options.addOption("clean", false, "Cleaning file");
         options.addOption("s", false, "Prints sentences");
-        options.addOption("v", true, "Generates semantic descriptor vector");
+        options.addOption("v", false, "Generates semantic descriptor vector");
         options.addOption("t", true, "Calculates top-J similarity");
         options.addOption("m", true, "More similarity");
+        options.addOption("k", true, "K-means");
 
         CommandLineParser parser = new DefaultParser();
 
@@ -63,16 +64,14 @@ public class Main {
         //Only creates 1 vector and requires an argument to create that vector
         if (cmd.hasOption("v")) {
             String vectorBase = cmd.getOptionValue("v");
-            System.out.println("Calculating vector for " + vectorBase + "...\n");
+            System.out.println("Calculating all vectors...\n");
             SimilarityVector vector = new SimilarityVector(clean, unCleanUnique);
 //          System.out.println(vector.getCleanUniqueWords());
             Map<String, Vector> vectors = vector.makeAllVectors();
             Iterator<String> w = vectors.keySet().iterator();
 
-            int i = 0;
-            while (w.hasNext() && i<5) {
+            while (w.hasNext()) {
                 vectors.get(w.next()).printVector();
-                i++;
             }
         }
 
@@ -190,6 +189,14 @@ public class Main {
             }
             long stop = System.currentTimeMillis();
             System.out.println("Total execution time: " + (stop - start)/1000 + " seconds");
+        }
+
+        if (cmd.hasOption("k")) {
+            String x = cmd.getOptionValue("k");
+            String[] y = x.split(",");
+            int numClust = Integer.parseInt(y[0]);
+            int numIter = Integer.parseInt(y[1]);
+
         }
 
         if (cmd.hasOption("h")) {

@@ -12,6 +12,12 @@ public class EuclideanDistance {
     Map<String, Integer> done = new HashMap<>();
     private Double baseMagnitude;
 
+    public EuclideanDistance() {
+        this.baseVector = null;
+        this.baseMagnitude = null;
+        this.toCompareVector = null;
+    }
+
     public EuclideanDistance(Vector baseVector) {
         this.baseVector = baseVector;
         this.baseMagnitude = Similarity.getMagnitude(baseVector);

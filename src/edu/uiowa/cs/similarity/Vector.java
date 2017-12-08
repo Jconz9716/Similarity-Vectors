@@ -60,8 +60,7 @@ public class Vector implements VectorInterface<String> {
 
     public String getBase() {
         if (this.base.isEmpty()) {
-            System.out.println(this.getKeySet());
-            throw new IllegalStateException();
+            throw new IllegalStateException("Vector has no base");
         }
         return this.base;
     }
