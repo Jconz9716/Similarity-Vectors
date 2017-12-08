@@ -100,7 +100,10 @@ public class Vector implements VectorInterface<String> {
 
     public List<List<String>> vectorToList() {
         List<List<String>> pairs = new LinkedList<>();
+        List<String> listBase = new LinkedList<>();
+        listBase.add("Base: " + getBase());
         vector.forEach((key, value) -> pairs.add(getPair(key)));
+        pairs.add(0, listBase);
         return pairs;
     }
 

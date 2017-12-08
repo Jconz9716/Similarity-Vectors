@@ -211,6 +211,7 @@ public class Main {
                 if (vIterator.hasNext()) {
                     current = vIterator.next();
                     centroids.add(vectors.get(current));
+                    System.out.println("Centroid " + i + ": " + vectors.get(current).vectorToList());
                 }
             }
 

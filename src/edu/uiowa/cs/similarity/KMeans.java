@@ -9,7 +9,7 @@ public class KMeans {
     private EuclideanDistance distance = new EuclideanDistance();
     private int k;
     private List<List<Vector>> clusters = new LinkedList<>();
-    private double minimum = 1;
+    private double minimum;
     private List<List<String>> cleanedWords;
     private SimilarityVector similarityVector;
 
@@ -28,11 +28,12 @@ public class KMeans {
         Iterator<String> vectorIterator = vectors.keySet().iterator();
         Iterator<Vector> centroidIterator;
         List<Vector> list = new LinkedList<>();
-        Vector centroidVector;
+        //Vector centroidVector;
         double eucDistance;
 
         int i;
         while (vectorIterator.hasNext()) {
+            minimum = 50;
             distance.setVectorToCompare(vectors.get(vectorIterator.next()));
             centroidIterator =  centroids.iterator();
             i = 0;
@@ -41,6 +42,7 @@ public class KMeans {
                 //System.out.println("Base vector: " + distance.getBaseVector());
                 //System.out.println("Vector to compare to: " + distance.getVectorToCompare());
                 eucDistance = distance.getEucDistance();
+                //Adding vectors multiple times. Need to change to add 1x
                 if (eucDistance < minimum) {
                     try {
                         clusters.get(i).add(distance.getVectorToCompare());
@@ -59,15 +61,21 @@ public class KMeans {
     public void calcCentroid() {
         List<Vector> newCentroids = new LinkedList<>();
         Iterator<List<Vector>> clusterIterator = clusters.iterator();
+        List<String> unique;
         Iterator<Vector> cluster;
+        Iterator<String> allKeys;
         Vector centroid;
         Vector currentVector;
         int num = centroids.size();
         Iterator<String> cVectorKeys;
-        //Iterator<String> allKeys;
+        int numVectors;
         String current;
 
-        //allKeys = similarityVector.getUniqueWords(cleanedWords).iterator();
+        unique = similarityVector.getUniqueWords(cleanedWords);
+        numVectors = unique.size();
+        allKeys = unique.iterator();
+
+        System.out.println("Number of vectors: " + numVectors);
 
         //Recalculating centroid values
         while (clusterIterator.hasNext()) {
