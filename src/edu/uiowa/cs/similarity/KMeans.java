@@ -2,10 +2,7 @@ package edu.uiowa.cs.similarity;
 
 import clojure.core.Vec;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 public class KMeans {
     private List<Vector> centroids;
@@ -13,45 +10,85 @@ public class KMeans {
     private int k;
     private List<List<Vector>> clusters = new LinkedList<>();
     private double minimum = 1;
+    private List<List<String>> cleanedWords;
+    private SimilarityVector similarityVector;
 
-    public KMeans(List<Vector> centroids) {
+    public KMeans(List<Vector> centroids, List<List<String>> cleanedWords) {
         this.centroids = centroids;
         this.k = centroids.size();
+        this.cleanedWords = cleanedWords;
+        this.similarityVector = new SimilarityVector(cleanedWords);
+
+        for (int i = 0; i<k; i++) {
+            clusters.add(new LinkedList<>());
+        }
     }
 
-    public List<List<Vector>> calcKmeans(Iterator<Vector> vectorIterator) {
+    public List<List<Vector>> calcKmeans(Map<String, Vector> vectors) {
+        Iterator<String> vectorIterator = vectors.keySet().iterator();
+        Iterator<Vector> centroidIterator;
+        List<Vector> list = new LinkedList<>();
+        Vector centroidVector;
+        double eucDistance;
+
+        int i;
         while (vectorIterator.hasNext()) {
-            distance.setVectorToCompare(vectorIterator.next());
-            for (int i = 0; i<centroids.size(); i++) {
-                distance.setBaseVector(centroids.get(i));
-                if (distance.getEucDistance() < minimum) {
-                    clusters.get(i).add(distance.getVectorToCompare());
+            distance.setVectorToCompare(vectors.get(vectorIterator.next()));
+            centroidIterator =  centroids.iterator();
+            i = 0;
+            while (centroidIterator.hasNext()) {
+                distance.setBaseVector(centroidIterator.next());
+                //System.out.println("Base vector: " + distance.getBaseVector());
+                //System.out.println("Vector to compare to: " + distance.getVectorToCompare());
+                eucDistance = distance.getEucDistance();
+                if (eucDistance < minimum) {
+                    try {
+                        clusters.get(i).add(distance.getVectorToCompare());
+                    }catch (IndexOutOfBoundsException ex) {
+                        clusters.add(i, list);
+                        clusters.get(i).add(distance.getVectorToCompare());
+                    }
+                    minimum = eucDistance;
                 }
+                i++;
             }
         }
         return clusters;
     }
 
     public void calcCentroid() {
-        List<Vector> nCentroids = new LinkedList<>();
+        List<Vector> newCentroids = new LinkedList<>();
         Iterator<List<Vector>> clusterIterator = clusters.iterator();
         Iterator<Vector> cluster;
-        Iterator<Vector> vectorIterator;
         Vector centroid;
-        Vector v;
+        Vector currentVector;
         int num = centroids.size();
+        Iterator<String> cVectorKeys;
+        //Iterator<String> allKeys;
+        String current;
+
+        //allKeys = similarityVector.getUniqueWords(cleanedWords).iterator();
 
         //Recalculating centroid values
-        for (int i = 0; i<num; i++) {
+        while (clusterIterator.hasNext()) {
             centroid = centroids.remove(0);
-            while (clusterIterator.hasNext()) {
-                cluster = clusterIterator.next().iterator();
-                while (cluster.hasNext()) {
-                    v = cluster.next();
-
+            cluster = clusterIterator.next().iterator();
+            while (cluster.hasNext()) {
+                currentVector = cluster.next();
+                cVectorKeys = currentVector.getKeySet().iterator();
+                while (cVectorKeys.hasNext()) {
+                    current = cVectorKeys.next();
+                    if (centroid.contains(current)) {
+                        centroid.increment(current, currentVector.getSimValue(current));
+                    } else {
+                        centroid.insert(current);
+                        centroid.increment(current, currentVector.getSimValue(current));
+                    }
                 }
-            }
 
+            }
+            newCentroids.add(centroid);
         }
+        centroids.addAll(newCentroids);
     }
 }

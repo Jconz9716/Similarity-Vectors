@@ -197,6 +197,40 @@ public class Main {
             int numClust = Integer.parseInt(y[0]);
             int numIter = Integer.parseInt(y[1]);
 
+            System.out.println("Calculating all vectors...\n");
+            SimilarityVector vector = new SimilarityVector(clean, unCleanUnique);
+//          System.out.println(vector.getCleanUniqueWords());
+            Map<String, Vector> vectors = vector.makeAllVectors();
+            System.out.println(vectors.size() + " vectors");
+            Iterator<String> vIterator = vectors.keySet().iterator();
+            String current;
+
+            List<Vector> centroids = new LinkedList<>();
+
+            for (int i = 0; i<numClust; i++) {
+                if (vIterator.hasNext()) {
+                    current = vIterator.next();
+                    centroids.add(vectors.get(current));
+                }
+            }
+
+            KMeans kmeans = new KMeans(centroids, clean);
+            List<List<Vector>> clusters;
+            Iterator<Vector> vectorIterator;
+
+            for (int z = 0; z<numIter; z++) {
+                clusters = kmeans.calcKmeans(vectors);
+                kmeans.calcCentroid();
+                for (int in = 0; in<clusters.size(); in++) {
+                    System.out.println("Cluster " + in + "...");
+                    for (List<Vector> vec : clusters) {
+                        vectorIterator = vec.iterator();
+                        while (vectorIterator.hasNext())
+                        System.out.println(vectorIterator.next().vectorToList());
+                    }
+                }
+            }
+
         }
 
         if (cmd.hasOption("h")) {

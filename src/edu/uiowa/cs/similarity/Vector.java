@@ -35,6 +35,10 @@ public class Vector implements VectorInterface<String> {
         //System.out.println("New simValue: " + vector.get(s).getAsString());
     }
 
+    public void increment(String s, int x) {
+        vector.get(s).incrementSim(x);
+    }
+
     public boolean contains(String key) {
         return vector.containsKey(key);
     }
@@ -124,6 +128,7 @@ public class Vector implements VectorInterface<String> {
         }
 
         public void incrementSim() { value++;}
+        public void incrementSim(int i) { value += i;}
         public int getAsInt() { return value; }
         public String getAsString() {
             return String.valueOf(value);

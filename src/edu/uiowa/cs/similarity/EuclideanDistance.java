@@ -81,16 +81,16 @@ public class EuclideanDistance {
         return -Math.sqrt(distance);
     }
 
-    public void setBaseVector(Vector base) {
-        this.baseVector = base;
+    public void setBaseVector(Vector baseVector) {
+        this.baseVector = baseVector;
     }
 
     public Vector getBaseVector() {
         return this.baseVector;
     }
 
-    public void setVectorToCompare(Vector compare) {
-        this.toCompareVector = compare;
+    public void setVectorToCompare(Vector vectorToCompare) {
+        this.toCompareVector = vectorToCompare;
     }
 
     public Vector getVectorToCompare() {
