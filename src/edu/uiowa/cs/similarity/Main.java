@@ -205,7 +205,13 @@ public class Main {
             Iterator<String> vIterator = vectors.keySet().iterator();
             String current;
 
+                /*while (vIterator.hasNext()){
+                    vectors.get(vIterator.next()).printVector();
+            }*/
+
             List<Vector> centroids = new LinkedList<>();
+
+            //vIterator = vectors.keySet().iterator();
 
             for (int i = 0; i<numClust; i++) {
                 if (vIterator.hasNext()) {
@@ -222,13 +228,9 @@ public class Main {
             for (int z = 0; z<numIter; z++) {
                 clusters = kmeans.calcKmeans(vectors);
                 kmeans.calcCentroid();
-                for (int in = 0; in<clusters.size(); in++) {
-                    System.out.println("Cluster " + in + "...");
-                    for (List<Vector> vec : clusters) {
-                        vectorIterator = vec.iterator();
-                        while (vectorIterator.hasNext())
-                        System.out.println(vectorIterator.next().vectorToList());
-                    }
+                kmeans.resetClusters();
+                for (int in = 0; in<kmeans.centroids.size(); in++) {
+                    System.out.println("Centroid " + kmeans.centroids.get(in).vectorToList());
                 }
             }
 

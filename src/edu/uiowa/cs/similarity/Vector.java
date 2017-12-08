@@ -36,7 +36,7 @@ public class Vector implements VectorInterface<String> {
     }
 
     public void increment(String s, int x) {
-        vector.get(s).incrementSim(x);
+        vector.get(s).addToSim(x);
     }
 
     public boolean contains(String key) {
@@ -116,6 +116,10 @@ public class Vector implements VectorInterface<String> {
         return vector.get(key).getAsInt();
     }
 
+    public void setSimValue(String key, int i) {
+        vector.get(key).setSimValue(i);
+    }
+
     public String cleanWord(String word) {
         PorterStemmer stem = new PorterStemmer();
         //Filters out all of the extra characters, then  stop words
@@ -125,14 +129,15 @@ public class Vector implements VectorInterface<String> {
         return stem.stem(word);
     }
 
-    public class SimValue {
+    public static class SimValue {
         private int value;
         public SimValue(int i) {
             this.value = i;
         }
 
         public void incrementSim() { value++;}
-        public void incrementSim(int i) { value += i;}
+        public void addToSim(int i) { value += i;}
+        public void setSimValue(int i) { value = i;}
         public int getAsInt() { return value; }
         public String getAsString() {
             return String.valueOf(value);
