@@ -42,7 +42,7 @@ public class KMeans {
                 //System.out.println("Base vector: " + distance.getBaseVector());
                 //System.out.println("Vector to compare to: " + distance.getVectorToCompare());
                 eucDistance = distance.getEucDistance();
-                //Adding vectors multiple times. Need to change to add 1x
+                // *** Adding vectors multiple times. Need to change to add 1x ***
                 if (eucDistance < minimum) {
                     try {
                         clusters.get(i).add(distance.getVectorToCompare());
@@ -93,7 +93,10 @@ public class KMeans {
                         centroid.increment(current, currentVector.getSimValue(current));
                     }
                 }
-
+                // *** Need to divide all values in new centroid by numVectors. Is equal to total num of unique words ***
+                /*for (SimValue value : centroid) {
+                    //Set SimValue to current value/num unique words
+                }*/
             }
             newCentroids.add(centroid);
         }
