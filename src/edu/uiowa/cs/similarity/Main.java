@@ -246,40 +246,39 @@ public class Main {
             CosineSimilarity similarity = new CosineSimilarity();
             String message;
             Value info;
-            clusters = kmeans.clusters;
             List<Vector> currentCluster;
-            Iterator<List<Vector>> clusterIterator = clusters.iterator();
-            Iterator<Vector> centroidIterator = kmeans.centroids.iterator();
             Vector currentCentroid;
 
             getKmeans(numIter, vectors, kmeans);
-            while (centroidIterator.hasNext()) {
-                currentCluster = clusterIterator.next();
+            clusters = kmeans.clusters;
+            for (Iterator<List<Vector>> it = clusters.iterator(); it.hasNext(); ) {
+                currentCluster = it.next();
                 Iterator<Vector> vecInCluster = currentCluster.iterator();
-                currentCentroid = centroidIterator.next();
-                similarity.setBaseVector(currentCentroid);
+                for (Iterator<Vector> centIt = centroids.iterator(); centIt.hasNext(); ) {
+                    currentCentroid = centIt.next();
+                    similarity.setBaseVector(currentCentroid);
 
-                while (vecInCluster.hasNext()) {
-                    similarity.setVectorToCompare(vecInCluster.next());
-                    message = (similarity.getVectorToCompare().getBase() + "  -->  ");
-                    info = new Value(similarity.calculateCosineSim(), message);
-                    ordered.add(info);
+                    while (vecInCluster.hasNext()) {
+                        similarity.setVectorToCompare(vecInCluster.next());
+                        message = (similarity.getVectorToCompare().getBase() + "  -->  ");
+                        info = new Value(similarity.calculateCosineSim(), message);
+                        ordered.add(info);
+                    }
                 }
-
                 int count = 0;
                 Value toPrint;
                 System.out.println("Current centroid: " + similarity.getBaseVector().vectorToList());
-                while (!ordered.isEmpty() && count<numResults) {
+                while (!ordered.isEmpty() && count < numResults) {
                     toPrint = ordered.poll();
                     System.out.println(toPrint.getValue() + toPrint.getKey());
                     count++;
                 }
+
                 if (currentCluster.isEmpty()) {
                     System.out.println("**********************************");
                 }
                 ordered.clear();
             }
-
         }
 
         if (cmd.hasOption("h")) {
