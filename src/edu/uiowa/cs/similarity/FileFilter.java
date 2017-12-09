@@ -59,10 +59,10 @@ public class FileFilter implements Filter<String> {
 //                    Removing "'" after checking for stop words in order to catch contractions
 //                    Ex. don't, can't, wouldn't, etc.
                     cleanWord = cleanWord.replaceAll("[^a-zA-Z]", "");
-//                    System.out.println(cleanWord);
-                    stemmedWord = stem.stem(cleanWord);
-//                    System.out.println("Stemmed --> " + stemmedWord);
-                    stemSentence.add(stemmedWord);
+                    if (!cleanWord.isEmpty()) {
+                        stemmedWord = stem.stem(cleanWord);
+                        stemSentence.add(stemmedWord);
+                    }
                 }
             }
             //Will only print stemmed sentence if the element is not empty

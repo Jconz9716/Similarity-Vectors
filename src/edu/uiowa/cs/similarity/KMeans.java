@@ -8,7 +8,7 @@ public class KMeans {
     public List<Vector> centroids;
     private EuclideanDistance distance = new EuclideanDistance();
     private int k;
-    private List<List<Vector>> clusters = new LinkedList<>();
+    public List<List<Vector>> clusters = new ArrayList<>();
     private double minimum;
     private List<List<String>> cleanedWords;
     private SimilarityVector similarityVector;
