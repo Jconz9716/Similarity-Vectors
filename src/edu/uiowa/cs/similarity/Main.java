@@ -233,12 +233,17 @@ public class Main {
 
             List<Vector> centroids = new ArrayList<>();
             Random random = new Random();
+            List<String> centroidKeys = new ArrayList<>();
 
             //Pick random initial centroids from list of vectors
             for (int i = 0; i<numClust; i++) {
                 randomKey = keys.get(random.nextInt(keys.size()));
+                while (centroidKeys.contains(randomKey)) {
+                    randomKey = keys.get(random.nextInt(keys.size()));
+                }
                 System.out.println("Centroid ->" + randomKey);
                 centroids.add(vectors.remove(randomKey));
+                centroidKeys.add(randomKey);
             }
 
             KMeans kmeans = new KMeans(centroids, clean);
@@ -254,12 +259,11 @@ public class Main {
             clusters = kmeans.clusters;
             for (Iterator<List<Vector>> it = clusters.iterator(); it.hasNext(); ) {
                 currentCluster = it.next();
-                Iterator<Vector> vecInCluster = currentCluster.iterator();
+                //Iterator<Vector> vecInCluster = currentCluster.iterator();
                 for (Iterator<Vector> centIt = centroids.iterator(); centIt.hasNext(); ) {
                     currentCentroid = centIt.next();
                     similarity.setBaseVector(currentCentroid);
-
-                    while (vecInCluster.hasNext()) {
+                    for (Iterator<Vector> vecInCluster = currentCluster.iterator(); vecInCluster.hasNext(); ){
                         similarity.setVectorToCompare(vecInCluster.next());
                         message = (similarity.getVectorToCompare().getBase() + "  -->  ");
                         info = new Value(similarity.calculateCosineSim(), message);
