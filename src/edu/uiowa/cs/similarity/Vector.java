@@ -30,13 +30,11 @@ public class Vector implements VectorInterface<String> {
         if (!vector.containsKey(s)) {
             vector.put(s, x);
         }
-        //System.out.println("Original simValue: " + vector.get(s).getAsString());
         vector.get(s).incrementSim();
-        //System.out.println("New simValue: " + vector.get(s).getAsString());
     }
 
-    public void increment(String s, int x) {
-        vector.get(s).incrementSim(x);
+    public void increment(String s, double x) {
+        vector.get(s).addToSim(x);
     }
 
     public boolean contains(String key) {
@@ -44,7 +42,7 @@ public class Vector implements VectorInterface<String> {
     }
 
     public List<String> getPair(String key) {
-        List<String> pair = new LinkedList<>();
+        List<String> pair = new ArrayList<>();
         if (contains(key)) {
             pair.add(key);
             pair.add(vector.get(key).getAsString());
@@ -54,7 +52,7 @@ public class Vector implements VectorInterface<String> {
 
     //Only for getting the key and value pair, cannot change the sim value
     public String getPairAsString(String key) {
-        List<Object> pair = new LinkedList<>();
+        List<Object> pair = new ArrayList<>();
         if (contains(key)) {
             pair.add(key);
             pair.add(vector.get(key).getAsString());
@@ -78,11 +76,15 @@ public class Vector implements VectorInterface<String> {
         return stemmer.stem(this.base);
     }
 
+    public boolean isEmpty() {
+        return vector.isEmpty();
+    }
+
     public void printVector() {
         if (vector.isEmpty()) {
             System.err.println("*** The keyword '" + getBase() + "' does not exist in this text ***");
         }else {
-            List<String> pVector = new LinkedList<>();
+            List<String> pVector = new ArrayList<>();
             pVector = printVectorHelper(vectorToList(), pVector);
             Collections.sort(pVector);
             System.out.println("Word: " + getBase() + " -> " + pVector);
@@ -100,11 +102,10 @@ public class Vector implements VectorInterface<String> {
 
     //Converts vector to list to help with debugging
     public List<List<String>> vectorToList() {
-        List<List<String>> pairs = new LinkedList<>();
-        List<String> listBase = new LinkedList<>();
+        List<List<String>> pairs = new ArrayList<>();
+        List<String> listBase = new ArrayList<>();
         listBase.add("Base: " + getBase());
         vector.forEach((key, value) -> pairs.add(getPair(key)));
-        pairs.add(0, listBase);
         return pairs;
     }
 
@@ -112,8 +113,12 @@ public class Vector implements VectorInterface<String> {
         return vector.keySet();
     }
 
-    public int getSimValue(String key) {
-        return vector.get(key).getAsInt();
+    public double getSimValue(String key) {
+        return vector.get(key).getAsDouble();
+    }
+
+    public void setSimValue(String key, double i) {
+        vector.get(key).setSimValue(i);
     }
 
     public String cleanWord(String word) {
@@ -125,15 +130,16 @@ public class Vector implements VectorInterface<String> {
         return stem.stem(word);
     }
 
-    public class SimValue {
-        private int value;
-        public SimValue(int i) {
+    public static class SimValue {
+        private double value;
+        public SimValue(double i) {
             this.value = i;
         }
 
         public void incrementSim() { value++;}
-        public void incrementSim(int i) { value += i;}
-        public int getAsInt() { return value; }
+        public void addToSim(double i) { value += i;}
+        public void setSimValue(double i) { value = i;}
+        public double getAsDouble() { return value; }
         public String getAsString() {
             return String.valueOf(value);
         }
