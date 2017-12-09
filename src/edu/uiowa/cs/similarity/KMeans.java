@@ -62,21 +62,13 @@ public class KMeans {
     public void calcCentroid() {
         List<Vector> newCentroids = new LinkedList<>();
         Iterator<List<Vector>> clusterIterator = clusters.iterator();
-        List<String> unique;
         Iterator<Vector> cluster;
         List<Vector> listOfVectorsInCluster;
-        Iterator<String> allKeys;
         Vector centroid;
         Vector currentVector;
-        int num = centroids.size();
         int clusterSize;
         Iterator<String> cVectorKeys;
-        int numVectors;
         String current;
-
-        unique = similarityVector.getUniqueWords(cleanedWords);
-        numVectors = unique.size();
-        allKeys = unique.iterator();
 
         //System.out.println("Number of vectors: " + numVectors);
 
@@ -108,11 +100,12 @@ public class KMeans {
                 while (newCentIterator.hasNext()) {
                     x = newCentIterator.next();
                     //System.out.println("Current sim value: " + centroid.getSimValue(x));
-                    centroid.setSimValue(x, centroid.getSimValue(x)/clusterSize);
+                    centroid.setSimValue(x, centroid.getSimValue(x)/clusterSize + 1);
                     //Set SimValue to current value/num unique words
                     //System.out.println("Final sim value: " + centroid.getSimValue(x));
                 }
             }
+            //centroid.printVector();
             newCentroids.add(centroid);
         }
         centroids.clear();

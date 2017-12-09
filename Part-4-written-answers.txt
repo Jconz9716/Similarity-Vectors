@@ -1,0 +1,36 @@
+I figured asymptotic runtime without the runtime of creating my vectors, which is big-oh(n^2) but I optimized it by
+ignoring sentences that don’t contain the word I am trying to create the vector for
+
+a)
+Our vectors are stored in hashmaps
+32*S bytes for entries storage, 4*capacity bytes for entries array. Total memory usage of a vector: 36*S*capacity
+Total memory usage of all vectors: numVectors*size*capacity*36
+The memory usage is reasonable because we prioritized speed over memory efficiency.
+
+b)
+My algorithm was dot product of vector x and vector y/square root of the magnitude of both vectors multiplied together.
+The asymptotic running time is big-oh number of words total between the two vectors that I am comparing
+Yes it is because the function has a linear asymptotic runtime
+
+c)
+I calculated the cosine similarity between all vectors and the specified base vector and added them into a reverse
+order priority queue
+Asymptotic runtime is big-oh(nlogn), n being the number of vectors. It is big-oh(n) for calculating the cosine
+similarity, and big-oh(logn) for adding each vector to the priority queue
+Yes because it is better than exponential runtime which is what I was trying to avoid
+
+d)
+I originally was going through each sentence as a list when creating the vectors and checking every sentence, but I
+changed it to putting each sentence in an iterator after first checking if the sentence contained the keyword I was
+looking for. If I had more time, I could make it faster by using array lists instead of linked lists. An array list can
+access the n-th element in constant time, while linked list goes from 0->n.
+
+Another change I made was I started out storing vectors in a list and using list.get(), but to speed it up I stored my
+vectors in a hashmap with the keys being the keyword used to create the vector. Originally when I tried to do anything
+with War and Peace, I let it run for over 10 minutes and it didn’t finish. Now, the total runtime for Top-J is 2
+minutes and 22 seconds. I calculated the total runtime by using System.currentTimeMillis() to record the start and stop
+of all calculations and print it out at the end.
+
+I decided to make the base of each vector be the original unstemmed word, and get its stem when I needed to compare it.
+I did this to help with readability
+

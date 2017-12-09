@@ -202,7 +202,8 @@ public class Main {
 //          System.out.println(vector.getCleanUniqueWords());
             Map<String, Vector> vectors = vector.makeAllVectors();
             System.out.println(vectors.size() + " vectors");
-            Iterator<String> vIterator = vectors.keySet().iterator();
+            List<String> keys = new ArrayList<>(vectors.keySet());
+            String randomKey;
             String current;
 
                 /*while (vIterator.hasNext()){
@@ -212,28 +213,29 @@ public class Main {
             List<Vector> centroids = new LinkedList<>();
 
             //vIterator = vectors.keySet().iterator();
+            Random random = new Random();
 
             for (int i = 0; i<numClust; i++) {
-                if (vIterator.hasNext()) {
-                    current = vIterator.next();
-                    centroids.add(vectors.get(current));
-                    System.out.println("Centroid " + i + ": " + vectors.get(current).vectorToList());
-                }
+                randomKey = keys.get(random.nextInt(keys.size()));
+                centroids.add(vectors.remove(randomKey));
+                System.out.println("Centroid " + i + ": " + centroids.get(i).getBase() + "--> " + centroids.get(i).vectorToList());
             }
 
             KMeans kmeans = new KMeans(centroids, clean);
-            List<List<Vector>> clusters;
+            //List<List<Vector>> clusters;
             Iterator<Vector> vectorIterator;
 
             for (int z = 0; z<numIter; z++) {
-                clusters = kmeans.calcKmeans(vectors);
+                kmeans.calcKmeans(vectors);
                 kmeans.calcCentroid();
                 kmeans.resetClusters();
                 for (int in = 0; in<kmeans.centroids.size(); in++) {
                     System.out.println("Centroid " + kmeans.centroids.get(in).vectorToList());
                 }
             }
-
+            /*System.out.println("Centroids 1 and 2 are equal: " + kmeans.centroids.get(0).equals(kmeans.centroids.get(1)));
+            System.out.println("Centroids 2 and 3 are equal: " + kmeans.centroids.get(1).equals(kmeans.centroids.get(2)));
+            System.out.println("Centroids 1 and 3 are equal: " + kmeans.centroids.get(0).equals(kmeans.centroids.get(2)));*/
         }
 
         if (cmd.hasOption("h")) {

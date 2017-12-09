@@ -55,11 +55,10 @@ public class FileFilter implements Filter<String> {
             //Filters out all of the extra characters, then  stop words
             for (int i = 0; i < sentence.length; i++) {
                 cleanWord = sentence[i].replaceAll("[;:,--\"\\s]", "");
-                cleanWord = cleanWord.replaceAll("[^a-zA-Z]", "");
                 if (!cleanWord.isEmpty() && !stop.contains(cleanWord)) {
 //                    Removing "'" after checking for stop words in order to catch contractions
 //                    Ex. don't, can't, wouldn't, etc.
-                    cleanWord = cleanWord.replaceAll("[']", "");
+                    cleanWord = cleanWord.replaceAll("[^a-zA-Z]", "");
 //                    System.out.println(cleanWord);
                     stemmedWord = stem.stem(cleanWord);
 //                    System.out.println("Stemmed --> " + stemmedWord);

@@ -78,6 +78,10 @@ public class Vector implements VectorInterface<String> {
         return stemmer.stem(this.base);
     }
 
+    public boolean isEmpty() {
+        return vector.isEmpty();
+    }
+
     public void printVector() {
         if (vector.isEmpty()) {
             System.err.println("*** The keyword '" + getBase() + "' does not exist in this text ***");
@@ -104,7 +108,7 @@ public class Vector implements VectorInterface<String> {
         List<String> listBase = new LinkedList<>();
         listBase.add("Base: " + getBase());
         vector.forEach((key, value) -> pairs.add(getPair(key)));
-        pairs.add(0, listBase);
+        //pairs.add(0, listBase);
         return pairs;
     }
 
