@@ -18,9 +18,10 @@ public class Main {
         options.addOption("h", false, "print this help message");
         options.addOption("clean", false, "Cleaning file");
         options.addOption("s", false, "Prints sentences");
-        options.addOption("v", true, "Generates semantic descriptor vector");
-        options.addOption("t", true, "Calculates top-J similarity");
+        options.addOption("v", false, "Generates semantic descriptor vector");
+        options.addOption("t", true, "Cosine similarity");
         options.addOption("m", true, "More similarity");
+        options.addOption("k", true, "K-means");
 
         CommandLineParser parser = new DefaultParser();
 
@@ -63,16 +64,14 @@ public class Main {
         //Only creates 1 vector and requires an argument to create that vector
         if (cmd.hasOption("v")) {
             String vectorBase = cmd.getOptionValue("v");
-            System.out.println("Calculating vector for " + vectorBase + "...\n");
+            System.out.println("Calculating all vectors...\n");
             SimilarityVector vector = new SimilarityVector(clean, unCleanUnique);
 //          System.out.println(vector.getCleanUniqueWords());
             Map<String, Vector> vectors = vector.makeAllVectors();
             Iterator<String> w = vectors.keySet().iterator();
 
-            int i = 0;
-            while (w.hasNext() && i<5) {
+            while (w.hasNext()) {
                 vectors.get(w.next()).printVector();
-                i++;
             }
         }
 
@@ -190,6 +189,49 @@ public class Main {
             }
             long stop = System.currentTimeMillis();
             System.out.println("Total execution time: " + (stop - start)/1000 + " seconds");
+        }
+
+        if (cmd.hasOption("k")) {
+            String x = cmd.getOptionValue("k");
+            String[] y = x.split(",");
+            int numClust = Integer.parseInt(y[0]);
+            int numIter = Integer.parseInt(y[1]);
+
+            System.out.println("Calculating all vectors...\n");
+            SimilarityVector vector = new SimilarityVector(clean, unCleanUnique);
+//          System.out.println(vector.getCleanUniqueWords());
+            Map<String, Vector> vectors = vector.makeAllVectors();
+            System.out.println(vectors.size() + " vectors");
+            Iterator<String> vIterator = vectors.keySet().iterator();
+            String current;
+
+            List<Vector> centroids = new LinkedList<>();
+
+            for (int i = 0; i<numClust; i++) {
+                if (vIterator.hasNext()) {
+                    current = vIterator.next();
+                    centroids.add(vectors.get(current));
+                    System.out.println("Centroid " + i + ": " + vectors.get(current).vectorToList());
+                }
+            }
+
+            KMeans kmeans = new KMeans(centroids, clean);
+            List<List<Vector>> clusters;
+            Iterator<Vector> vectorIterator;
+
+            for (int z = 0; z<numIter; z++) {
+                clusters = kmeans.calcKmeans(vectors);
+                kmeans.calcCentroid();
+                for (int in = 0; in<clusters.size(); in++) {
+                    System.out.println("Cluster " + in + "...");
+                    for (List<Vector> vec : clusters) {
+                        vectorIterator = vec.iterator();
+                        while (vectorIterator.hasNext())
+                        System.out.println(vectorIterator.next().vectorToList());
+                    }
+                }
+            }
+
         }
 
         if (cmd.hasOption("h")) {

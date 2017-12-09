@@ -21,6 +21,10 @@ public class Vector implements VectorInterface<String> {
         vector.put(s, x);
     }
 
+    public void insert(String s, SimValue v) {
+        vector.put(s, v);
+    }
+
     public void increment(String s) {
         SimValue x = new SimValue(0);
         if (!vector.containsKey(s)) {
@@ -29,6 +33,10 @@ public class Vector implements VectorInterface<String> {
         //System.out.println("Original simValue: " + vector.get(s).getAsString());
         vector.get(s).incrementSim();
         //System.out.println("New simValue: " + vector.get(s).getAsString());
+    }
+
+    public void increment(String s, int x) {
+        vector.get(s).incrementSim(x);
     }
 
     public boolean contains(String key) {
@@ -60,8 +68,7 @@ public class Vector implements VectorInterface<String> {
 
     public String getBase() {
         if (this.base.isEmpty()) {
-            System.out.println(this.getKeySet());
-            throw new IllegalStateException();
+            throw new IllegalStateException("Vector has no base");
         }
         return this.base;
     }
@@ -91,9 +98,13 @@ public class Vector implements VectorInterface<String> {
         }
     }
 
+    //Converts vector to list to help with debugging
     public List<List<String>> vectorToList() {
         List<List<String>> pairs = new LinkedList<>();
+        List<String> listBase = new LinkedList<>();
+        listBase.add("Base: " + getBase());
         vector.forEach((key, value) -> pairs.add(getPair(key)));
+        pairs.add(0, listBase);
         return pairs;
     }
 
@@ -121,6 +132,7 @@ public class Vector implements VectorInterface<String> {
         }
 
         public void incrementSim() { value++;}
+        public void incrementSim(int i) { value += i;}
         public int getAsInt() { return value; }
         public String getAsString() {
             return String.valueOf(value);

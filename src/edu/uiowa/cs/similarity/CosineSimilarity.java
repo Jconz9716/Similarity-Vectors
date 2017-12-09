@@ -31,11 +31,11 @@ public class CosineSimilarity {
 
     public double calculateCosineSim() {
         cosineSimilarity = 0;
-        if (getDenominator() == 0) {
+        double d = getDenominator();
+        if (d == 0) {
             return cosineSimilarity;
         }
-        //System.out.println(getDotProduct());
-        cosineSimilarity += getDotProduct()/denominator;
+        cosineSimilarity += getDotProduct()/d;
         return cosineSimilarity;
     }
 

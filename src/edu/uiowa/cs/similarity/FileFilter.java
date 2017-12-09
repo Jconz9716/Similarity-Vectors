@@ -50,7 +50,7 @@ public class FileFilter implements Filter<String> {
 
             line = line.replaceAll("\n", " ");
 
-            sentence = line.split(" ");
+            sentence = line.split("\\s");
 
             //Filters out all of the extra characters, then  stop words
             for (int i = 0; i < sentence.length; i++) {

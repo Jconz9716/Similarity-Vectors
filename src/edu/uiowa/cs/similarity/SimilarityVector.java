@@ -16,6 +16,10 @@ public class SimilarityVector extends Vector {
         this.dirtyWords = dirtyWords;
     }
 
+    public SimilarityVector(List<List<String>> cleanedWords) {
+        this.cleanedWords = cleanedWords;
+    }
+
     public List<String> getUniqueWords(List<List<String>> words) {
         List<String> unique = new LinkedList<>();
         for (int i = 0; i<words.size(); i++) {
