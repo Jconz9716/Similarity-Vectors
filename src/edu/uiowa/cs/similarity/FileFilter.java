@@ -2,10 +2,8 @@ package edu.uiowa.cs.similarity;
 
 
 import java.io.*;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
+
 import opennlp.tools.stemmer.*;
 
 public class FileFilter implements Filter<String> {
@@ -33,7 +31,7 @@ public class FileFilter implements Filter<String> {
     Goes until there are no lines left in the document. It's ok if the last line is blank since most end
     in a blank line */
     private List<List<String>> meatAndPotatoes(Scanner scanner) {
-        List<List<String>> sentencesList = new LinkedList<>();
+        List<List<String>> sentencesList = new ArrayList<>();
         List<String> stop = stopWords();
         String cleanWord;
         String stemmedWord;
@@ -45,7 +43,7 @@ public class FileFilter implements Filter<String> {
 
 
         while (scanner.hasNext()) {
-            List<String> stemSentence = new LinkedList<>();
+            List<String> stemSentence = new ArrayList<>();
             line = scanner.next().toLowerCase();
 
             line = line.replaceAll("\n", " ");
@@ -56,8 +54,8 @@ public class FileFilter implements Filter<String> {
             for (int i = 0; i < sentence.length; i++) {
                 cleanWord = sentence[i].replaceAll("[;:,--\"\\s]", "");
                 if (!cleanWord.isEmpty() && !stop.contains(cleanWord)) {
-//                    Removing "'" after checking for stop words in order to catch contractions
-//                    Ex. don't, can't, wouldn't, etc.
+                    //Removing "'" after checking for stop words in order to catch contractions
+                    //Ex. don't, can't, wouldn't, etc.
                     cleanWord = cleanWord.replaceAll("[^a-zA-Z]", "");
                     if (!cleanWord.isEmpty()) {
                         stemmedWord = stem.stem(cleanWord);
@@ -89,7 +87,7 @@ public class FileFilter implements Filter<String> {
     }
 
     private List<List<String>> getDirtyWordsHelper(Scanner scanner) {
-        List<List<String>> sentencesList = new LinkedList<>();
+        List<List<String>> sentencesList = new ArrayList<>();
         List<String> stop = stopWords();
         String cleanWord;
         String line;
@@ -99,7 +97,7 @@ public class FileFilter implements Filter<String> {
 
         int index = 0;
         while (scanner.hasNext()) {
-            List<String> sentenceList = new LinkedList<>();
+            List<String> sentenceList = new ArrayList<>();
             line = scanner.next().toLowerCase();
 
             line = line.replaceAll("\n", " ");
@@ -141,7 +139,7 @@ public class FileFilter implements Filter<String> {
 
     //*** Might need to change to account for words on the same line in stopwords.txt
     private List<String> stopWords() {
-        List<String> words = new LinkedList<>();
+        List<String> words = new ArrayList<>();
         Scanner s2 = null;
         try {
             s2 = new Scanner(stopWords);

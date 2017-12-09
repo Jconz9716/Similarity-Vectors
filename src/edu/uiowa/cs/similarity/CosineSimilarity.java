@@ -15,8 +15,6 @@ public class CosineSimilarity {
 
     public void printCosineSimilarity() {
         String message = "Cosine similarity of %s -> %s: ";
-        //System.out.println(getBaseVector());
-        //System.out.println(getVectorToCompare().base);
         message = String.format(message, baseVector.base, vectorToCompare.base);
         System.out.println(message + calculateCosineSim());
     }
@@ -48,7 +46,6 @@ public class CosineSimilarity {
             while (keysofX.hasNext()) {
                 key = keysofX.next();
                 if (vectorToCompare.contains(key)) {
-                    //System.out.println(baseVector.getSimValue(key) + " --> " + vectorToCompare.getSimValue(key));
                     dotProduct += baseVector.getSimValue(key) * vectorToCompare.getSimValue(key);
                 }
             }
@@ -56,12 +53,10 @@ public class CosineSimilarity {
             while (keysofY.hasNext()) {
                 key = keysofY.next();
                 if (baseVector.contains(key)) {
-                    //System.out.println(baseVector.getSimValue(key) + " --> " + vectorToCompare.getSimValue(key));
                     dotProduct += vectorToCompare.getSimValue(key) * baseVector.getSimValue(key);
                 }
             }
         }
-        //System.out.println("Dot product: " + dotProduct);
         return dotProduct;
     }
 

@@ -63,12 +63,10 @@ public class Main {
             }
         }
 
-        //Only creates 1 vector and requires an argument to create that vector
         if (cmd.hasOption("v")) {
             String vectorBase = cmd.getOptionValue("v");
             System.out.println("Calculating all vectors...\n");
             SimilarityVector vector = new SimilarityVector(clean, unCleanUnique);
-//          System.out.println(vector.getCleanUniqueWords());
             Map<String, Vector> vectors = vector.makeAllVectors();
             Iterator<String> w = vectors.keySet().iterator();
 
@@ -108,7 +106,6 @@ public class Main {
                     System.out.println("The Euclidean distance will be based on the similarity vector of " + keyword);
                     System.out.println("");
                     Iterator<String> eucKeyIterator = vectors.keySet().iterator();
-                    //distance.setBaseVector(vectors.get(myVector.cleanWord(keyword)));
                     holyGrail = distance.getBaseVector().getBase();
 
                     while (eucKeyIterator.hasNext()) {
@@ -136,7 +133,6 @@ public class Main {
                     System.out.println("The euclidean distance between normalized vectors for " + keyword);
                     System.out.println("");
                     Iterator<String> eucKeyIterator = vectors.keySet().iterator();
-                    //distance.setBaseVector(vectors.get(myVector.cleanWord(keyword)));
                     holyGrail = distance.getBaseVector().getBase();
 
                     while (eucKeyIterator.hasNext()) {
@@ -189,8 +185,6 @@ public class Main {
                     count++;
                 }
             }
-            long stop = System.currentTimeMillis();
-            System.out.println("Total execution time: " + (stop - start)/1000 + " seconds");
         }
 
         if (cmd.hasOption("k")) {
@@ -201,20 +195,11 @@ public class Main {
 
             System.out.println("Calculating all vectors...\n");
             SimilarityVector vector = new SimilarityVector(clean, unCleanUnique);
-//          System.out.println(vector.getCleanUniqueWords());
             Map<String, Vector> vectors = vector.makeAllVectors();
             System.out.println(vectors.size() + " vectors");
             List<String> keys = new ArrayList<>(vectors.keySet());
             String randomKey;
-            String current;
-
-                /*while (vIterator.hasNext()){
-                    vectors.get(vIterator.next()).printVector();
-            }*/
-
-            List<Vector> centroids = new LinkedList<>();
-
-            //vIterator = vectors.keySet().iterator();
+            List<Vector> centroids = new ArrayList<>();
             Random random = new Random();
 
             for (int i = 0; i<numClust; i++) {
@@ -224,8 +209,6 @@ public class Main {
             }
 
             KMeans kmeans = new KMeans(centroids, clean);
-            //List<List<Vector>> clusters;
-            Iterator<Vector> vectorIterator;
 
             getKmeans(numIter, vectors, kmeans);
 
@@ -240,57 +223,59 @@ public class Main {
 
             System.out.println("Calculating all vectors...\n");
             SimilarityVector vector = new SimilarityVector(clean, unCleanUnique);
+            long startMakeVector = System.currentTimeMillis();
             Map<String, Vector> vectors = vector.makeAllVectors();
+            long stopMakeVector = System.currentTimeMillis();
             System.out.println(vectors.size() + " vectors");
+            System.out.println("Vector make time: " + (stopMakeVector - startMakeVector) / 1000 + " seconds");
             List<String> keys = new ArrayList<>(vectors.keySet());
             String randomKey;
-            String current;
 
-            List<Vector> centroids = new LinkedList<>();
+            List<Vector> centroids = new ArrayList<>();
             Random random = new Random();
 
+            //Pick random initial centroids from list of vectors
             for (int i = 0; i<numClust; i++) {
                 randomKey = keys.get(random.nextInt(keys.size()));
                 centroids.add(vectors.remove(randomKey));
-                //System.out.println("Centroid " + i + ": " + centroids.get(i).getBase() + "--> " + centroids.get(i).vectorToList());
             }
 
             KMeans kmeans = new KMeans(centroids, clean);
             List<List<Vector>> clusters;
-            Iterator<Vector> vectorIterator;
-
-            getKmeans(numIter, vectors, kmeans);
-
             PriorityQueue<Value> ordered = new PriorityQueue<>(Collections.reverseOrder());
             CosineSimilarity similarity = new CosineSimilarity();
             String message;
             Value info;
-            String holyGrail;
             clusters = kmeans.clusters;
             List<Vector> currentCluster;
+            Iterator<List<Vector>> clusterIterator = clusters.iterator();
+            Iterator<Vector> centroidIterator = kmeans.centroids.iterator();
+            Vector currentCentroid;
 
-            for (int w = 0; w<clusters.size(); w++) {
-                currentCluster = clusters.get(w);
-                Iterator<Vector> clusterIterator = currentCluster.iterator();
-                similarity.setBaseVector(kmeans.centroids.get(w));
-                holyGrail = similarity.getBaseVector().getBase();
-                System.out.println("Current centroid: " + similarity.getBaseVector().vectorToList() + "\n");
-                System.out.println(clusterIterator.hasNext());
+            getKmeans(numIter, vectors, kmeans);
+            while (centroidIterator.hasNext()) {
+                currentCluster = clusterIterator.next();
+                Iterator<Vector> vecInCluster = currentCluster.iterator();
+                currentCentroid = centroidIterator.next();
+                similarity.setBaseVector(currentCentroid);
 
-                while (clusterIterator.hasNext()) {
-                    similarity.setVectorToCompare(clusterIterator.next());
-                    message =  ("Cosine similarity of " + holyGrail + " -> ");
-                    message += (similarity.getVectorToCompare().getBase() + ":  ");
+                while (vecInCluster.hasNext()) {
+                    similarity.setVectorToCompare(vecInCluster.next());
+                    message = (similarity.getVectorToCompare().getBase() + "  -->  ");
                     info = new Value(similarity.calculateCosineSim(), message);
                     ordered.add(info);
                 }
 
                 int count = 0;
                 Value toPrint;
+                System.out.println("Current centroid: " + similarity.getBaseVector().vectorToList());
                 while (!ordered.isEmpty() && count<numResults) {
                     toPrint = ordered.poll();
                     System.out.println(toPrint.getValue() + toPrint.getKey());
                     count++;
+                }
+                if (currentCluster.isEmpty()) {
+                    System.out.println("**********************************");
                 }
                 ordered.clear();
             }
@@ -298,21 +283,22 @@ public class Main {
         }
 
         if (cmd.hasOption("h")) {
-        HelpFormatter helpf = new HelpFormatter();
-        helpf.printHelp("Main", options, true);
-        System.exit(0);
+            HelpFormatter helpf = new HelpFormatter();
+            helpf.printHelp("Main", options, true);
+            System.exit(0);
+        }
+        long stop = System.currentTimeMillis();
+        System.out.println("Total execution time: " + (stop - start)/1000 + " seconds");
     }
-
-}
 
     private static void getKmeans(int numIter, Map<String, Vector> vectors, KMeans kmeans) {
         for (int z = 0; z<numIter; z++) {
             kmeans.resetClusters();
+            System.out.println("---------- Iteration " + (z+1) + " -----------");
+            System.out.println("********** ...Clustering... **********");
             kmeans.calcKmeans(vectors);
+            System.out.println("Calculating new centroids...");
             kmeans.calcCentroid();
-            for (int in = 0; in<kmeans.centroids.size(); in++) {
-                System.out.println("Centroid " + kmeans.centroids.get(in).vectorToList());
-            }
         }
     }
 

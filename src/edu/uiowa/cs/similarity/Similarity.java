@@ -13,7 +13,6 @@ public class Similarity {
             square = v.getSimValue(key);
             magniutde += square * square;
         }
-        //System.out.println("Magnitude of " + v.base + ": " + magniutde);
         return magniutde;
     }
 }

@@ -21,11 +21,10 @@ public class SimilarityVector extends Vector {
     }
 
     public List<String> getUniqueWords(List<List<String>> words) {
-        List<String> unique = new LinkedList<>();
+        List<String> unique = new ArrayList<>();
         for (int i = 0; i<words.size(); i++) {
             List<String> sentence = words.get(i);
             for (int x = 0; x<sentence.size(); x++) {
-                //System.out.println(sentence);
                 String check = sentence.get(x);
                 if (!unique.contains(check)){
                     unique.add(check);
