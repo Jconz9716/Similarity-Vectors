@@ -273,7 +273,7 @@ public class Main {
                     System.out.println(toPrint.getValue() + toPrint.getKey());
                     count++;
                 }
-
+                //Prints if cluster is empty
                 if (currentCluster.isEmpty()) {
                     System.out.println("**********************************");
                 }
