@@ -68,7 +68,7 @@ public class KMeans {
         while (clusterIterator.hasNext()) {
             centroid = centroids.remove(0);
             listOfVectorsInCluster = clusterIterator.next();
-            clusterSize = listOfVectorsInCluster.size();
+            clusterSize = listOfVectorsInCluster.size() + 1;
             System.out.println("Cluster size: " + clusterSize);
             cluster = listOfVectorsInCluster.iterator();
             while (cluster.hasNext()) {
@@ -77,18 +77,11 @@ public class KMeans {
                 while (cVectorKeys.hasNext()) {
                     current = cVectorKeys.next();
                     if (centroid.contains(current)) {
-                        centroid.setSimValue(current, centroid.getSimValue(current) + currentVector.getSimValue(current));
+                        centroid.setSimValue(current, (centroid.getSimValue(current) + currentVector.getSimValue(current))/clusterSize);
                     } else {
                         centroid.insert(current, new Vector.SimValue(currentVector.getSimValue(current)));
-                        centroid.increment(current, currentVector.getSimValue(current));
+                        centroid.increment(current, (currentVector.getSimValue(current))/clusterSize);
                     }
-                }
-
-                Iterator<String> newCentIterator = centroid.getKeySet().iterator();
-                String x;
-                while (newCentIterator.hasNext()) {
-                    x = newCentIterator.next();
-                    centroid.setSimValue(x, centroid.getSimValue(x)/clusterSize + 1);
                 }
             }
             newCentroids.add(centroid);

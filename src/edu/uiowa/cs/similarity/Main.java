@@ -237,6 +237,7 @@ public class Main {
             //Pick random initial centroids from list of vectors
             for (int i = 0; i<numClust; i++) {
                 randomKey = keys.get(random.nextInt(keys.size()));
+                System.out.println("Centroid ->" + randomKey);
                 centroids.add(vectors.remove(randomKey));
             }
 

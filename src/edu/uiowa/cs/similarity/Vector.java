@@ -33,7 +33,7 @@ public class Vector implements VectorInterface<String> {
         vector.get(s).incrementSim();
     }
 
-    public void increment(String s, int x) {
+    public void increment(String s, double x) {
         vector.get(s).addToSim(x);
     }
 
@@ -113,11 +113,11 @@ public class Vector implements VectorInterface<String> {
         return vector.keySet();
     }
 
-    public int getSimValue(String key) {
-        return vector.get(key).getAsInt();
+    public double getSimValue(String key) {
+        return vector.get(key).getAsDouble();
     }
 
-    public void setSimValue(String key, int i) {
+    public void setSimValue(String key, double i) {
         vector.get(key).setSimValue(i);
     }
 
@@ -131,15 +131,15 @@ public class Vector implements VectorInterface<String> {
     }
 
     public static class SimValue {
-        private int value;
-        public SimValue(int i) {
+        private double value;
+        public SimValue(double i) {
             this.value = i;
         }
 
         public void incrementSim() { value++;}
-        public void addToSim(int i) { value += i;}
-        public void setSimValue(int i) { value = i;}
-        public int getAsInt() { return value; }
+        public void addToSim(double i) { value += i;}
+        public void setSimValue(double i) { value = i;}
+        public double getAsDouble() { return value; }
         public String getAsString() {
             return String.valueOf(value);
         }
